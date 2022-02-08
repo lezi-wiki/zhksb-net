@@ -1,10 +1,10 @@
 # 张贺凯大傻逼-黒汞鸡DDT 
-**注意：本[主页](https://zhksb.net)。的作用**
+**注意：本[主页](https://zhksb.net)的作用**
 
 **让更多人知道张贺凯这个傻逼**
 
 **让更少的人去购买他的云服务**
->张大佬的个 人 主 页。问题或建议，请去项目GitHub Issues留言。
+>张大佬的[个 人 主 页](https://zhksb.net)源码。问题或建议，请去项目[GitHub Issues](https://github.com/zhk-sb/zhk/issues)留言。
 
 建议使用 **Chrome** 浏览器，体验最佳效果。
 

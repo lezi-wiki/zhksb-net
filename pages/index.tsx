@@ -51,7 +51,7 @@ export default function Home() {
                     name={"description"}
                     content={"张贺凯小朋友傻逼到超乎你的想象"}
                 />
-                <link rel="preload" href="/avatar.png" as="image" />
+                <link rel="preload" href="https://q3.a1pic.cn/2022/02/08/M0wM.png" as="image" />
                 <link rel="prefetch" href="//stat.ahdark.com" />
             </Head>
 
@@ -59,7 +59,7 @@ export default function Home() {
             <Container maxWidth={"lg"} fixed={true}>
                 <Box className={classes.main}>
                     <img
-                        src={"/avatar.png"}
+                        src={"https://q3.a1pic.cn/2022/02/08/M0wM.png"}
                         alt="张贺凯"
                         className={classes.avatar}
                     />

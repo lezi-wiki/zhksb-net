@@ -1,5 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
 import Head from "next/head";
-import Image from "next/image";
 import React from "react";
 import { createStyles, makeStyles, useTheme } from "@mui/styles";
 import {
@@ -11,7 +11,6 @@ import {
     Typography,
     useMediaQuery,
 } from "@mui/material";
-import avatarPic from "../public/avatar.png";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -33,6 +32,8 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         avatar: {
             borderRadius: "50%",
+            width: 280,
+            height: 280,
         },
     })
 );
@@ -50,18 +51,17 @@ export default function Home() {
                     name={"description"}
                     content={"张贺凯小朋友傻逼到超乎你的想象"}
                 />
+                <link rel="preload" href="/avatar.png" as="image" />
+                <link rel="prefetch" href="//stat.ahdark.com" />
             </Head>
 
             <CssBaseline />
             <Container maxWidth={"lg"} fixed={true}>
                 <Box className={classes.main}>
-                    <Image
-                        src={avatarPic}
+                    <img
+                        src={"/avatar.png"}
                         alt="张贺凯"
-                        width={280}
-                        height={280}
                         className={classes.avatar}
-                        priority
                     />
                     <Typography
                         variant={"h3"}
@@ -89,7 +89,9 @@ export default function Home() {
                         fontWeight={"bold"}
                     >
                         {"千万不要买我的服务器，我"}
-                        <span style={{color: "#FF0000"}}>{"每三天就必须跑路一次"}</span>
+                        <span style={{ color: "#FF0000" }}>
+                            {"每三天就必须跑路一次"}
+                        </span>
                         {"，没办法，生理需求。"}
                     </Typography>
                     <Typography
@@ -109,12 +111,11 @@ export default function Home() {
                         underline={"none"}
                         color={"inherit"}
                     >
-                        <Image
+                        <img
                             src={
                                 "https://img.shields.io/github/stars/zhk-sb/zhk?style=social"
                             }
-                            height={20}
-                            width={76}
+                            style={{ height: 20, width: 76 }}
                             alt={"stars"}
                         />
                     </Link>

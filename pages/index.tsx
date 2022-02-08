@@ -104,14 +104,14 @@ export default function Home() {
                 </Box>
                 <Box component={"footer"} textAlign={"center"}>
                     <Link
-                        href={"https://github.com/AH-dark/zhk"}
+                        href={"https://github.com/zhk-sb/zhk"}
                         rel={"noopener"}
                         underline={"none"}
                         color={"inherit"}
                     >
                         <Image
                             src={
-                                "https://img.shields.io/github/stars/AH-dark/zhk?style=social"
+                                "https://img.shields.io/github/stars/zhk-sb/zhk?style=social"
                             }
                             height={20}
                             width={76}

@@ -1,4 +1,5 @@
-注意：本主页的作用
+# 张贺凯大傻逼-黒汞鸡DDT 
+**注意：本[主页](https://zhksb.net)。的作用**
 
 **让更多人知道张贺凯这个傻逼**
 
@@ -34,6 +35,7 @@
 
 
 本人照片（
+
 ![](https://q3.a1pic.cn/2022/02/09/MUdy.png)
 
 ## 2 黒汞鸡DDT/张大佬の奇妙事迹
@@ -62,14 +64,17 @@
 
 免费主机，能理解（
 
-### 2.3 DDT与AHdark网站对比
+### 2.3 黒汞鸡与AHdark网站对比
 ![](https://q3.a1pic.cn/2022/02/09/Mqv7.webp)
 D D T
 ![](https://q3.a1pic.cn/2022/02/09/MRZT.webp)
 AHdark原创
 
 
+
+
 **文章质量dddd**。
+
 ![](https://q3.a1pic.cn/2022/02/09/Mc2I.webp)
 ### 2.4 QQ群内的奇妙言论：CF有个P用
 
@@ -123,7 +128,7 @@ AHdark原创
 
 ![](https://xxb-dev.cn/wp-content/uploads/2022/02/CEMOH96ML_FBFF1GVWD2.jpg)
 
-## 5 致谢
+## 4 致谢
 
 * AHdark [AHdark的博客](https://ahdark.com/live/1240.shtml "事情经过")
 * AlphaPic [图片存储](https://www.alphapic.org.cn "图片存储")

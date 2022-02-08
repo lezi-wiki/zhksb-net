@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function Home() {
     const classes = useStyles();
-    const theme = useTheme();
+    const theme = useTheme<Theme>();
     const isMobileSize = useMediaQuery(theme.breakpoints.up("md"));
 
     return (

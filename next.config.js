@@ -1,9 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
-    images: {
-        domains: ["img.shields.io", "q3.a1pic.cn"],
-    },
+    productionBrowserSourceMaps: true,
+    assetPrefix: "https://zhksb-assets.s.ahdark.com"
 };
 
 module.exports = nextConfig;

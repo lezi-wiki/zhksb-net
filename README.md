@@ -38,7 +38,7 @@
 
 ![](https://q3.a1pic.cn/2022/02/09/MUdy.png)
 
-## 2 黒汞鸡DDT/张大佬の奇妙事迹
+## 2 黒汞鸡DDT/张大佬の不平凡人生
 
 ### 2.1 微信公众号
 
@@ -66,6 +66,7 @@
 
 ### 2.3 黒汞鸡与AHdark网站对比
 ![](https://q3.a1pic.cn/2022/02/09/Mqv7.webp)
+
 D D T
 ![](https://q3.a1pic.cn/2022/02/09/MRZT.webp)
 AHdark原创

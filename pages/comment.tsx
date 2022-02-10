@@ -11,30 +11,39 @@ import {
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
-import Script from "next/script";
+import NavBar from "../components/NavBar";
+import Waline from "../components/Waline";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            paddingTop: theme.spacing(8)
+            paddingTop: theme.spacing(8),
         },
-        main: {},
+        main: {
+            paddingTop: theme.spacing(4),
+        },
         title: {
-            textAlign: "center"
+            textAlign: "center",
         },
         comment: {
-            paddingTop: theme.spacing(6)
-        }
+            paddingTop: theme.spacing(6),
+        },
     })
 );
+
+type Props = {
+    hostname: string;
+    ua: string;
+};
 
 export const getServerSideProps: GetServerSideProps = async (context) => ({
     props: {
         hostname: context.req.headers["host"],
+        ua: context.req.headers["user-agent"],
     },
 });
 
-export default function Comment(props) {
+export default function Comment(props: Props): JSX.Element {
     const classes = useStyles();
     const router = useRouter();
 
@@ -53,35 +62,21 @@ export default function Comment(props) {
                 />
                 <link rel="prefetch" href="//stat.ahdark.com" />
             </Head>
-            <Script
-                src={
-                    "https://npm.sourcegcdn.com/@waline/client@1.5.4/dist/Waline.min.js"
-                }
-                strategy="beforeInteractive"
-                id={"Waline"}
-            />
-            <Script strategy="afterInteractive" id={"Waline-config"}>
-                {`
-                    Waline({
-                        el: "#comment",
-                        serverURL: "https://comment.zhksb.net",
-                        path: "${props.hostname}${router.pathname}",
-                        lang: "${router.locale}",
-                        emoji: ["https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/tw-emoji"],
-                        requiredMeta: ['nick', 'mail']
-                    })
-                `}
-            </Script>
 
             <CssBaseline />
+            <NavBar />
             <Container maxWidth={"lg"} fixed={true} className={classes.root}>
                 <Box className={classes.main}>
                     <Box className={classes.title}>
-                        <Typography variant={"h3"} component={"h1"} fontFamily={'"Roboto", "Noto Sans SC", sans-serif'}>
+                        <Typography
+                            variant={"h3"}
+                            component={"h1"}
+                            fontFamily={'"Roboto", "Noto Sans SC", sans-serif'}
+                        >
                             {"评论"}
                         </Typography>
                     </Box>
-                    <Box id={"comment"} className={classes.comment}>{""}</Box>
+                    <Waline path={router.pathname} ua={props.ua} />
                 </Box>
                 <Box component={"footer"} textAlign={"center"}>
                     <Link

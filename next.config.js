@@ -8,7 +8,7 @@ const nextConfig = {
     assetPrefix: isProd ? STATIC_URL : "",
     i18n: {
         locales: ["zh", "zh-CN", "zh-TW", "en", "en-US", "jp", "jp-JP"],
-        defaultLocale: "zh-CN"
+        defaultLocale: "zh-CN",
     },
 };
 

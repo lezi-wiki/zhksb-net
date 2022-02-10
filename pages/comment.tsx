@@ -31,22 +31,19 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-type Props = {
-    hostname: string;
-    ua: string;
-};
-
 export const getServerSideProps: GetServerSideProps = async (context) => ({
     props: {
-        headers: context.req.headers
+        headers: context.req.headers,
     },
 });
 
-export default function Comment(props: Props): JSX.Element {
+export default function Comment(props: any): JSX.Element {
     const classes = useStyles();
     const router = useRouter();
-    
-    console.log(props);
+
+    const host = props.headers.hasOwnProperty("x-forwarded-host")
+        ? props.headers["x-forwarded-host"]
+        : props.headers["host"];
 
     return (
         <>
@@ -77,7 +74,7 @@ export default function Comment(props: Props): JSX.Element {
                             {"评论"}
                         </Typography>
                     </Box>
-                    <Waline path={router.pathname} ua={""} />
+                    <Waline path={router.pathname} />
                 </Box>
                 <Box component={"footer"} textAlign={"center"}>
                     <Link

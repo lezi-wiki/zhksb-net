@@ -12,11 +12,12 @@ import {
     SvgIcon,
     TextField,
     Theme,
-} from "@mui/material";
-import WalineAPI from "../../middleware/WalineAPI";
-import { CommentListType } from "../../types/Comment/CommentListType";
+}                            from "@mui/material";
+import WalineAPI             from "../../middleware/WalineAPI";
+import { CommentListType }   from "../../types/Comment/CommentListType";
 import { CommentSubmitType } from "../../types/Comment/CommentSubmitType";
-import CommentBlock from "./CommentBlock";
+import CommentBlock          from "./CommentBlock";
+import axios                 from 'axios'
 
 const style = {
     border: "1px solid",
@@ -167,13 +168,26 @@ const getData = async ({
     return res.data;
 };
 
-export default function Waline(props: { path: string; ua: string }) {
+export default function Waline(props: { path: string; }) {
     const classes = useStyles();
     const [loading, setLoading] = useState(false);
+    const [userAgent, setUserAgent] = useState("");
+    
+    useEffect(() => {
+        axios.post<string>("https://api.ahdark.com/release/user-agent").then((res) => {
+            if(res.status!==200) {
+                throw new Error("Cannot get User-Agent.");
+            }
+            setUserAgent(res.data);
+            console.log("Get User-Agent success: "+res.data);
+        }).catch(err => {
+            console.log(err);
+        })
+    },[])
 
     // 评论数据
     const [options, setOptions] = useState<CommentSubmitType>({
-        ua: props.ua,
+        ua: userAgent,
         comment: "",
         link: "",
         mail: "",

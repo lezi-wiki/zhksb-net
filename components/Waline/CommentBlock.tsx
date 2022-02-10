@@ -21,15 +21,6 @@ const useStyles = makeStyles((theme: Theme) =>
             marginTop: theme.spacing(2),
             marginBottom: theme.spacing(2),
         },
-        label: {
-            display: "inline-block",
-            marginRight: ".25em",
-            padding: "2px 4px",
-            borderRadius: ".2em",
-            background: "#f8f8f8",
-            color: "#999",
-            lineHeight: 1,
-        },
         content: {
             "& *": {
                 margin: 0,
@@ -76,16 +67,20 @@ export default function CommentBlock(props: { data: Datum }) {
                                 {props.data.nick}
                             </Typography>
                         )}
+                        <Typography
+                            variant={"subtitle2"}
+                            component={"span"}
+                            sx={{ color: "#b9b9b9", ml:1 }}
+                        >
+                            {time.format("YYYY/MM/DD HH:mm")}
+                        </Typography>
                     </>
                 }
                 subheader={
-                    <Typography
-                        variant={"subtitle2"}
-                        component={"span"}
-                        sx={{color: "#b9b9b9" }}
-                    >
-                        {time.format("YYYY/MM/DD HH:mm")}
-                    </Typography>
+                <>
+                    <Chip label={props.data.os} sx={{mr:1}} size={"small"} />
+                    <Chip label={props.data.browser} size={"small"} />
+                </>
                 }
                 sx={{ pb: 1 }}
             />

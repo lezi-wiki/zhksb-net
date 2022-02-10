@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
             flexGrow: 1,
         },
         appBar: {
-            zIndex: theme.zIndex.drawer + 1,
+            zIndex: theme.zIndex.drawer + 100,
         },
         drawer: {
             width: drawerWidth,

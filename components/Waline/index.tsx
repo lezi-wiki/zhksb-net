@@ -231,10 +231,28 @@ export default function Waline(props: { path: string; ua: string }) {
     const submit = (e: FormEvent) => {
         e.preventDefault();
         setLoading(true);
+        if (!options.comment || options.comment.trim().length < 10) {
+            setLoading(false);
+            throw Error("评论内容过短");
+        }
+        if (!options.nick || options.nick.trim().length < 2) {
+            setLoading(false);
+            throw Error("昵称过短");
+        }
+        if (
+            !options.mail ||
+            options.mail.trim().length < 6 ||
+            !new RegExp(
+                "^[a-zA-Z0-9-_.]+@[a-zA-Z-_0-9]+.[a-zA-Z-_0-9.]+$"
+            ).test(options.mail)
+        ) {
+            setLoading(false);
+            throw Error("错误的邮箱");
+        }
         WalineAPI.post("/comment", {
             comment: options.comment,
             link: options.link ? options.link : null,
-            mail: options.mail ? options.mail : null,
+            mail: options.mail,
             nick: options.nick,
             pid: options.pid === 0 ? null : options.pid,
             rid: options.rid === 0 ? null : options.rid,

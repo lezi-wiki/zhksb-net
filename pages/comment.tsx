@@ -38,17 +38,15 @@ type Props = {
 
 export const getServerSideProps: GetServerSideProps = async (context) => ({
     props: {
-        hostname: context.req.headers["host"],
-        ua:
-            context.req.headers["x-amz-user-agent"] ||
-            context.req.headers['User-Agent'] ||
-            context.req.headers["user-agent"],
+        headers: context.req.headers
     },
 });
 
 export default function Comment(props: Props): JSX.Element {
     const classes = useStyles();
     const router = useRouter();
+    
+    console.log(props);
 
     return (
         <>
@@ -79,7 +77,7 @@ export default function Comment(props: Props): JSX.Element {
                             {"评论"}
                         </Typography>
                     </Box>
-                    <Waline path={router.pathname} ua={props.ua} />
+                    <Waline path={router.pathname} ua={""} />
                 </Box>
                 <Box component={"footer"} textAlign={"center"}>
                     <Link

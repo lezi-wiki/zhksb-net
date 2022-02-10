@@ -76,28 +76,16 @@ export default function CommentBlock(props: { data: Datum }) {
                                 {props.data.nick}
                             </Typography>
                         )}
-                        <Typography
-                            variant={"subtitle2"}
-                            component={"span"}
-                            sx={{ ml: 1, color: "#b9b9b9" }}
-                        >
-                            {time.format("YYYY/MM/DD HH:mm")}
-                        </Typography>
                     </>
                 }
                 subheader={
-                    <>
-                        <Chip
-                            label={props.data.os}
-                            size="small"
-                            sx={{ mr: 1, fontSize: 6 }}
-                        />
-                        <Chip
-                            label={props.data.browser}
-                            size="small"
-                            sx={{ fontSize: 6 }}
-                        />
-                    </>
+                    <Typography
+                        variant={"subtitle2"}
+                        component={"span"}
+                        sx={{color: "#b9b9b9" }}
+                    >
+                        {time.format("YYYY/MM/DD HH:mm")}
+                    </Typography>
                 }
                 sx={{ pb: 1 }}
             />

@@ -5,8 +5,7 @@ const STATIC_URL = "https://zhksb-assets.s.ahdark.com";
 const nextConfig = {
     reactStrictMode: true,
     productionBrowserSourceMaps: true,
-    assetPrefix: isProd ? STATIC_URL : "",
-    swcMinify: true,
+    assetPrefix: isProd ? STATIC_URL : ""
 };
 
 module.exports = nextConfig;

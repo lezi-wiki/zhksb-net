@@ -39,7 +39,10 @@ type Props = {
 export const getServerSideProps: GetServerSideProps = async (context) => ({
     props: {
         hostname: context.req.headers["host"],
-        ua: context.req.headers["user-agent"],
+        ua:
+            context.req.headers["x-amz-user-agent"] ||
+            context.req.headers['User-Agent'] ||
+            context.req.headers["user-agent"],
     },
 });
 

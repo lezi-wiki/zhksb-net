@@ -231,7 +231,7 @@ export default function Waline(props: { path: string; ua: string }) {
     const submit = (e: FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        if (!options.comment || options.comment.trim().length < 10) {
+        if (!options.comment || options.comment.trim().length < 5) {
             setLoading(false);
             throw Error("评论内容过短");
         }

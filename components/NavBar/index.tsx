@@ -19,6 +19,7 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import Head from "next/head";
 import { RouteDataItem } from "../../types/RouteDataType";
 import NavItem from "./NavItem";
+import NextLink from "next/link";
 
 const drawerWidth = 240;
 
@@ -88,13 +89,15 @@ export default function NavBar() {
                         >
                             <MenuIcon />
                         </IconButton>
-                        <Typography
-                            variant="h6"
-                            component="div"
-                            sx={{ flexGrow: 1 }}
-                        >
-                            {"ZHKSB.net"}
-                        </Typography>
+                        <NextLink href={"/"}>
+                            <Typography
+                                variant="h6"
+                                component="div"
+                                sx={{ flexGrow: 1, cursor: "default" }}
+                            >
+                                {"ZHKSB.net"}
+                            </Typography>
+                        </NextLink>
                         <Link
                             href={"https://github.com/zhk-sb/zhk"}
                             rel={"noopener"}

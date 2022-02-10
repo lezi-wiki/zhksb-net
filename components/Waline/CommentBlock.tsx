@@ -51,7 +51,7 @@ export default function CommentBlock(props: { data: Datum }) {
     return (
         <Card className={classes.card} component={"article"}>
             <CardHeader
-                avatar={<Avatar src={props.data.avatar} />}
+                avatar={<Avatar src={props.data.avatar} alt={"Avatar"} />}
                 title={
                     <>
                         {props.data.link ? (

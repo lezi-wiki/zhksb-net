@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
         main: {
             height: "100%",
             minHeight: "100vh",
+            marginBottom: -60,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",

@@ -1,8 +1,3 @@
-<center>
-<img src="https://q3.a1pic.cn/2022/02/09/MUdy.png" alt="avatar" style="border-radius: 50%"/>
-<h1>张贺凯大傻逼-黒汞鸡DDT</h1>
-</center>
-
 ### 本 [项目](https://zhksb.net) 的作用
 
 **让更多人知道张贺凯这个傻逼，让更少的人去购买他的云服务**

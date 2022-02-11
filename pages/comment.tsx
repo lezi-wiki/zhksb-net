@@ -1,18 +1,12 @@
 import React from "react";
 import { createStyles, makeStyles } from "@mui/styles";
-import {
-    Box,
-    Container,
-    CssBaseline,
-    Link,
-    Theme,
-    Typography,
-} from "@mui/material";
+import { Box, Container, CssBaseline, Theme, Typography } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
 import NavBar from "../components/NavBar";
 import Waline from "../components/Waline";
+import Footer from "../components/Footer";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -48,11 +42,7 @@ export default function Comment(props: any): JSX.Element {
     return (
         <>
             <Head>
-                <title>{"评论 - 张贺凯大傻逼"}</title>
-                <meta
-                    name={"description"}
-                    content={"张贺凯小朋友傻逼到超乎你的想象"}
-                />
+                <meta name={"description"} content={"评论一下张大佬吧"} />
                 <link
                     rel="preload"
                     href="https://q3.a1pic.cn/2022/02/08/M0wM.png"
@@ -76,35 +66,7 @@ export default function Comment(props: any): JSX.Element {
                     </Box>
                     <Waline path={router.pathname} />
                 </Box>
-                <Box component={"footer"} textAlign={"center"}>
-                    <Link
-                        href={"https://github.com/zhk-sb/zhk"}
-                        rel={"noopener"}
-                        underline={"none"}
-                        color={"inherit"}
-                    >
-                        <img
-                            src={
-                                "https://img.shields.io/github/stars/zhk-sb/zhk?style=social"
-                            }
-                            style={{ height: 20, width: 76 }}
-                            alt={"stars"}
-                        />
-                    </Link>
-                    <Typography variant={"body2"} component={"p"}>
-                        {"Copyright © 2022 "}
-                        <Link
-                            href={"https://ahdark.com/live/1240.shtml"}
-                            fontFamily={'"Noto Sans SC", sans-serif'}
-                            underline={"none"}
-                            rel={"self noopener"}
-                            target={"_blank"}
-                        >
-                            {"黑科技工具屋"}
-                        </Link>
-                        {" All Right Reserved."}
-                    </Typography>
-                </Box>
+                <Footer />
             </Container>
         </>
     );

@@ -83,7 +83,7 @@ export default function NavBar() {
     return (
         <>
             <Head>
-                <title>{thisRoute.name + " - 张贺凯大傻逼"}</title>
+                <title>{thisRoute.name + " - 评论张大佬"}</title>
             </Head>
             <Box className={classes.root}>
                 <CssBaseline />

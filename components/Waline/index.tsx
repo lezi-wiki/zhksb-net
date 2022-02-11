@@ -236,7 +236,7 @@ export default function Waline(props: { path: string }) {
                         ...options,
                         ua: res.data,
                     });
-                    setPageLoading(true);
+                    setLoading(false);
                     setPageLoading(true);
                 })
                 .catch((err) => {

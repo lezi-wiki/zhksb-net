@@ -12,12 +12,13 @@ import {
     SvgIcon,
     TextField,
     Theme,
-}                            from "@mui/material";
-import WalineAPI             from "../../middleware/WalineAPI";
-import { CommentListType }   from "../../types/Comment/CommentListType";
+} from "@mui/material";
+import WalineAPI from "../../middleware/WalineAPI";
+import { CommentListType } from "../../types/Comment/CommentListType";
 import { CommentSubmitType } from "../../types/Comment/CommentSubmitType";
-import CommentBlock          from "./CommentBlock";
-import axios                 from 'axios'
+import CommentBlock from "./CommentBlock";
+import axios from "axios";
+import cookie from "react-cookies";
 
 const style = {
     border: "1px solid",
@@ -26,7 +27,14 @@ const style = {
     textColor: "#444",
 };
 
-const inputMeta = [
+type inputMetaType = {
+    name: "nick" | "mail" | "link";
+    describe: string;
+    type: string;
+	isMustInput: boolean;
+};
+
+const inputMeta:inputMetaType[] = [
     {
         name: "nick",
         describe: "昵称",
@@ -168,30 +176,34 @@ const getData = async ({
     return res.data;
 };
 
-export default function Waline(props: { path: string; }) {
+// Cookie操作
+const cookieSave = (name: string, value: string) => {
+    cookie.save(
+        "comment-data",
+        {
+            ...cookie.load("comment-data"),
+            [name]: value,
+        },
+        {
+            path: "/",
+        }
+    );
+};
+const cookieLoad: (name: string) => any = (name: string) => {
+    return Object(cookie.load("comment-data"))[name];
+};
+
+export default function Waline(props: { path: string }) {
     const classes = useStyles();
     const [loading, setLoading] = useState(false);
-    const [userAgent, setUserAgent] = useState("");
-    
-    useEffect(() => {
-        axios.post<string>("https://api.ahdark.com/release/user-agent").then((res) => {
-            if(res.status!==200) {
-                throw new Error("Cannot get User-Agent.");
-            }
-            setUserAgent(res.data);
-            console.log("Get User-Agent success: "+res.data);
-        }).catch(err => {
-            console.log(err);
-        })
-    },[])
 
     // 评论数据
     const [options, setOptions] = useState<CommentSubmitType>({
-        ua: userAgent,
+        ua: cookieLoad("ua"),
         comment: "",
-        link: "",
-        mail: "",
-        nick: "",
+        link: cookieLoad("link") || "",
+        mail: cookieLoad("mail") || "",
+        nick: cookieLoad("nick") || "",
         pid: null,
         rid: null,
         url: props.path,
@@ -207,14 +219,42 @@ export default function Waline(props: { path: string; }) {
         totalPages: 1,
     });
 
+    useEffect(() => {
+        if (!cookieLoad("ua")) {
+            setLoading(true);
+            axios
+                .post<string>("https://api.ahdark.com/release/user-agent")
+                .then((res) => {
+                    cookieSave("ua", res.data);
+                    setOptions({
+                        ...options,
+                        ua: res.data,
+                    });
+                    setLoading(false);
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        }
+	    console.log(
+		    `Get User-Agent from ${cookieLoad("ua") ? "cookie" : "api"} success: ${
+			    options.ua
+		    }`
+	    );
+    }, [0]);
+
     // 分页系统
     const [page, setPage] = useState<number>(1);
     const [totalPage, setTotalPage] = useState<number>(0);
     const nextPage = () => {
-        setPage(page + 1);
+        if (page + 1 <= totalPage) {
+            setPage(page + 1);
+        }
     };
     const previousPage = () => {
-        setPage(page - 1);
+        if (page - 1 >= 1) {
+            setPage(page - 1);
+        }
     };
 
     useEffect(() => {
@@ -231,11 +271,16 @@ export default function Waline(props: { path: string; }) {
                 console.error(err);
                 alert(err);
             });
+		
+	    console.log(postData);
     }, [options.url, page, loading]);
-    console.log(postData);
 
     const handleChange =
-        (name: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+        (name: string, isSave?: boolean) =>
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            if (isSave) {
+                cookieSave(name, event.target.value);
+            }
             setOptions({
                 ...options,
                 [name]: event.target.value,
@@ -312,6 +357,11 @@ export default function Waline(props: { path: string; }) {
                             rows={5}
                             className={classes.textarea}
                             onChange={handleChange("comment")}
+                            value={
+                                options.hasOwnProperty("comment")
+                                    ? options["comment"]
+                                    : ""
+                            }
                         />
                         <Box className={classes.info}>
                             {inputMeta.map((value) => (
@@ -324,7 +374,11 @@ export default function Waline(props: { path: string; }) {
                                         type={value.type}
                                         className={classes.input}
                                         label={value.describe}
-                                        onChange={handleChange(value.name)}
+                                        onChange={handleChange(
+                                            value.name,
+                                            true
+                                        )}
+                                        value={options[value.name]||""}
                                     />
                                 </Box>
                             ))}

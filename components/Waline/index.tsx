@@ -1,5 +1,5 @@
 import React, { FormEvent, useEffect, useState } from "react";
-import { createStyles, makeStyles } from "@mui/styles";
+import { createStyles, makeStyles, useTheme } from "@mui/styles";
 import {
     Alert,
     AlertTitle,
@@ -12,6 +12,7 @@ import {
     SvgIcon,
     TextField,
     Theme,
+    useMediaQuery,
 } from "@mui/material";
 import WalineAPI from "../../middleware/WalineAPI";
 import { CommentListType } from "../../types/Comment/CommentListType";
@@ -31,10 +32,10 @@ type inputMetaType = {
     name: "nick" | "mail" | "link";
     describe: string;
     type: string;
-	isMustInput: boolean;
+    isMustInput: boolean;
 };
 
-const inputMeta:inputMetaType[] = [
+const inputMeta: inputMetaType[] = [
     {
         name: "nick",
         describe: "昵称",
@@ -55,92 +56,91 @@ const inputMeta:inputMetaType[] = [
     },
 ];
 
-const column = 3;
-
 const labelWidth = Number((1000 / inputMeta.length).toFixed()) / 10;
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            textAlign: "left",
-            "& *": {
-                boxSizing: "content-box",
-                lineHeight: 1.75,
+const useStyles = (column: number) =>
+    makeStyles((theme: Theme) =>
+        createStyles({
+            root: {
+                textAlign: "left",
+                "& *": {
+                    boxSizing: "content-box",
+                    lineHeight: 1.75,
+                },
+                paddingTop: theme.spacing(4),
+                paddingBottom: theme.spacing(4),
             },
-            paddingTop: theme.spacing(4),
-            paddingBottom: theme.spacing(4),
-        },
-        editor: {
-            position: "relative",
-            display: "flex",
-            marginBottom: "0.75em",
-            flexDirection: "column",
-        },
-        editorDiv: {
-            position: "relative",
-            flexShrink: 1,
-            margin: "0.5em",
-            border: "none",
-            borderRadius: "0.75em",
-            background: "#FFF",
-            boxShadow: style.boxShadow,
-        },
-        info: {
-            display: "flex",
-            padding: "0 4px",
-            borderBottom: "2px dashed var(--waline-border-color)",
-            borderTopLeftRadius: "0.75em",
-            borderTopRightRadius: "0.75em",
-            overflow: "hidden",
-            paddingTop: theme.spacing(1.5),
-        },
-        infoItem: {
-            width: labelWidth + "%",
-            display: "flex",
-            flexWrap: "nowrap",
-            flexDirection: "row",
-        },
-        input: {
-            flex: 1,
-            maxWidth: "100%",
-            border: "none",
-            color: style.textColor,
-            outline: "none",
-            margin: theme.spacing(1),
-        },
-        textarea: {
-            margin: "0 12px",
-            width: "calc(100% - 24px)",
-            marginTop: theme.spacing(1),
-        },
-        footer: {
-            margin: "8px 12px",
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "nowrap",
-        },
-        footerLeft: {
-            "& >*": {
-                margin: "0 2px",
+            editor: {
+                position: "relative",
+                display: "flex",
+                marginBottom: "0.75em",
+                flexDirection: "column",
             },
-        },
-        footerRight: {},
-        gridContainer: {
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "nowrap",
-            alignItems: "flex-start",
-            "& >div": {
-                width: Number((1000 / column).toFixed()) / 10 + "%",
+            editorDiv: {
+                position: "relative",
+                flexShrink: 1,
+                margin: "0.5em",
+                border: "none",
+                borderRadius: "0.75em",
+                background: "#FFF",
+                boxShadow: style.boxShadow,
             },
-        },
-        notice: {
-            marginBottom: theme.spacing(2),
-        },
-    })
-);
+            info: {
+                display: "flex",
+                padding: "0 4px",
+                borderBottom: "2px dashed var(--waline-border-color)",
+                borderTopLeftRadius: "0.75em",
+                borderTopRightRadius: "0.75em",
+                overflow: "hidden",
+                paddingTop: theme.spacing(1.5),
+            },
+            infoItem: {
+                width: labelWidth + "%",
+                display: "flex",
+                flexWrap: "nowrap",
+                flexDirection: "row",
+            },
+            input: {
+                flex: 1,
+                maxWidth: "100%",
+                border: "none",
+                color: style.textColor,
+                outline: "none",
+                margin: theme.spacing(1),
+            },
+            textarea: {
+                margin: "0 12px",
+                width: "calc(100% - 24px)",
+                marginTop: theme.spacing(1),
+            },
+            footer: {
+                margin: "8px 12px",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                flexWrap: "nowrap",
+            },
+            footerLeft: {
+                "& >*": {
+                    margin: "0 2px",
+                },
+            },
+            footerRight: {},
+            gridContainer: {
+                display: "flex",
+                flexDirection: "row",
+                flexWrap: "nowrap",
+                alignItems: "flex-start",
+                "& >div": {
+                    minWidth: Number((1000 / column).toFixed()) / 10 + "%",
+                },
+            },
+            notice: {
+                marginBottom: theme.spacing(2),
+            },
+        })
+    );
 
 const MarkdownIcon = (props?: any) => {
     return (
@@ -194,8 +194,14 @@ const cookieLoad: (name: string) => any = (name: string) => {
 };
 
 export default function Waline(props: { path: string }) {
-    const classes = useStyles();
+    const theme = useTheme<Theme>();
+    const isPad = useMediaQuery(theme.breakpoints.between("sm", "md"));
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+    const column = isMobile || isPad ? 1 : 3;
+    const classes = useStyles(column)();
     const [loading, setLoading] = useState(false);
+    const [pageLoading, setPageLoading] = useState(false);
 
     // 评论数据
     const [options, setOptions] = useState<CommentSubmitType>({
@@ -230,18 +236,21 @@ export default function Waline(props: { path: string }) {
                         ...options,
                         ua: res.data,
                     });
-                    setLoading(false);
+                    setPageLoading(true);
+                    setPageLoading(true);
                 })
                 .catch((err) => {
                     console.error(err);
                 });
+        } else {
+            setPageLoading(true);
         }
-	    console.log(
-		    `Get User-Agent from ${cookieLoad("ua") ? "cookie" : "api"} success: ${
-			    options.ua
-		    }`
-	    );
-    }, [0]);
+        console.log(
+            `Get User-Agent from ${
+                cookieLoad("ua") ? "cookie" : "api"
+            } success: ${options.ua}`
+        );
+    }, []);
 
     // 分页系统
     const [page, setPage] = useState<number>(1);
@@ -270,9 +279,11 @@ export default function Waline(props: { path: string }) {
             .catch((err) => {
                 console.error(err);
                 alert(err);
+            })
+            .then(() => {
+                setPageLoading(true);
+                console.log(postData);
             });
-		
-	    console.log(postData);
     }, [options.url, page, loading]);
 
     const handleChange =
@@ -341,6 +352,10 @@ export default function Waline(props: { path: string }) {
         a.push(i);
     }
 
+    if (!pageLoading) {
+        return <>{"Loading"}</>;
+    }
+
     return (
         <Box className={classes.root}>
             <Alert severity="info" className={classes.notice}>
@@ -357,11 +372,7 @@ export default function Waline(props: { path: string }) {
                             rows={5}
                             className={classes.textarea}
                             onChange={handleChange("comment")}
-                            value={
-                                options.hasOwnProperty("comment")
-                                    ? options["comment"]
-                                    : ""
-                            }
+                            value={options["comment"] || ""}
                         />
                         <Box className={classes.info}>
                             {inputMeta.map((value) => (
@@ -378,7 +389,7 @@ export default function Waline(props: { path: string }) {
                                             value.name,
                                             true
                                         )}
-                                        value={options[value.name]||""}
+                                        value={options[value.name] || ""}
                                     />
                                 </Box>
                             ))}

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { createStyles, makeStyles } from "@mui/styles";
+import React, { useEffect, useState } from "react";
+import { createStyles, makeStyles, useTheme } from "@mui/styles";
 import {
     AppBar,
     Box,
@@ -11,6 +11,7 @@ import {
     Theme,
     Toolbar,
     Typography,
+    useMediaQuery,
 } from "@mui/material";
 import { RouteData } from "../../router";
 import { useRouter } from "next/router";
@@ -47,22 +48,31 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function NavBar() {
     const router = useRouter();
 
-    let thisRoute: RouteDataItem = RouteData[0];
-    for (let i = 0; i < RouteData.length; i++) {
-        if (RouteData[i].path == router.pathname) {
-            console.log("[Route]: get route data success");
-            thisRoute = RouteData[i];
-            break;
+    const [thisRoute, setRoute] = useState<RouteDataItem>(RouteData[0]);
+    useEffect(() => {
+        for (let i = 0; i < RouteData.length; i++) {
+            if (RouteData[i].path == router.pathname) {
+                console.log("[Route] get route data success");
+                setRoute(RouteData[i]);
+                break;
+            }
         }
-    }
+    }, [router.pathname]);
 
+    const theme = useTheme<Theme>();
     const classes = useStyles();
 
-    const [drawerOpen, setDrawerOpen] = useState(true);
+    const isSmallScreen: boolean = useMediaQuery(theme.breakpoints.down("sm"));
+    const [drawerOpen, setDrawerOpen] = useState<boolean>(true);
+
+    useEffect(() => {
+        console.log(`[UI] Small screen ${isSmallScreen.toString()}`);
+        setDrawerOpen(!isSmallScreen);
+    }, [isSmallScreen]);
 
     const handleDrawer = () => {
         console.log(
-            "[UI]: Drawer from " +
+            "[UI] Drawer from " +
                 drawerOpen.toString() +
                 " to " +
                 (!drawerOpen).toString()

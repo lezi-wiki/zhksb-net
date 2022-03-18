@@ -42,7 +42,7 @@
 
 **本主页头像系统接入[Gravatar 格拉瓦塔](https://gravatar.com/)头像系统，只要您在[Gravatar 格拉瓦塔](https://gravatar.com/)有上传过您的头像，本主页的评论系统会自动拉取您的头像**
 
-`ReadMe未完待续`
+`本ReadMe未完待续`
 # 项目维护
 
 ### 主要维护者

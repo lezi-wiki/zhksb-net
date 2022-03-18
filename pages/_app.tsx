@@ -3,12 +3,11 @@ import { ThemeProvider } from "@mui/styles";
 import { theme } from "../theme";
 import "@fontsource/roboto";
 import "@fontsource/noto-sans-sc";
-import React, { Component } from "react";
+import React, { Component, FC } from "react";
 import Script from "next/script";
+import { wrapper } from "../store/store";
 
-export default class MyApp extends Component<AppProps> {
-    render() {
-        const { Component, pageProps } = this.props;
+const MyApp: FC<AppProps> = ({ Component, pageProps })=> {
         return (
             <ThemeProvider theme={theme}>
                 <Script id={"matomo"} strategy="afterInteractive">
@@ -17,5 +16,7 @@ export default class MyApp extends Component<AppProps> {
                 <Component {...pageProps} />
             </ThemeProvider>
         );
-    }
 }
+
+
+export default wrapper.withRedux(MyApp)

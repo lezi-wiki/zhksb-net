@@ -1,25 +1,28 @@
-import React, { FormEvent, useEffect, useState } from "react";
-import { createStyles, makeStyles, useTheme } from "@mui/styles";
+import React, { FormEvent, Fragment, useEffect, useState } from "react";
+import { createStyles, makeStyles } from "@mui/styles";
 import {
     Alert,
     AlertTitle,
     Box,
     Button,
-    Grid,
+    CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
     IconButton,
     Link,
     Paper,
     SvgIcon,
     TextField,
     Theme,
-    useMediaQuery,
 } from "@mui/material";
 import WalineAPI from "../../middleware/WalineAPI";
 import { CommentListType } from "../../types/Comment/CommentListType";
 import { CommentSubmitType } from "../../types/Comment/CommentSubmitType";
 import CommentBlock from "./CommentBlock";
-import axios from "axios";
 import cookie from "react-cookies";
+import Masonry from "@mui/lab/Masonry";
 
 const style = {
     border: "1px solid",
@@ -58,89 +61,88 @@ const inputMeta: inputMetaType[] = [
 
 const labelWidth = Number((1000 / inputMeta.length).toFixed()) / 10;
 
-const useStyles = (column: number) =>
-    makeStyles((theme: Theme) =>
-        createStyles({
-            root: {
-                textAlign: "left",
-                "& *": {
-                    boxSizing: "content-box",
-                    lineHeight: 1.75,
-                },
-                paddingTop: theme.spacing(4),
-                paddingBottom: theme.spacing(4),
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        root: {
+            textAlign: "left",
+            "& *": {
+                boxSizing: "content-box",
+                lineHeight: 1.75,
             },
-            editor: {
-                position: "relative",
-                display: "flex",
-                marginBottom: "0.75em",
-                flexDirection: "column",
+            paddingTop: theme.spacing(4),
+            paddingBottom: theme.spacing(4),
+        },
+        editor: {
+            position: "relative",
+            display: "flex",
+            marginBottom: "0.75em",
+            flexDirection: "column",
+        },
+        editorDiv: {
+            position: "relative",
+            flexShrink: 1,
+            margin: "0.5em",
+            border: "none",
+            borderRadius: "0.75em",
+            background: "#FFF",
+            boxShadow: style.boxShadow,
+        },
+        info: {
+            display: "flex",
+            padding: "0 4px",
+            borderBottom: "2px dashed var(--waline-border-color)",
+            borderTopLeftRadius: "0.75em",
+            borderTopRightRadius: "0.75em",
+            overflow: "hidden",
+            paddingTop: theme.spacing(1.5),
+        },
+        infoItem: {
+            width: labelWidth + "%",
+            display: "flex",
+            flexWrap: "nowrap",
+            flexDirection: "row",
+        },
+        input: {
+            flex: 1,
+            maxWidth: "100%",
+            border: "none",
+            color: style.textColor,
+            outline: "none",
+            margin: theme.spacing(1),
+        },
+        textarea: {
+            margin: "0 12px",
+            width: "calc(100% - 24px)",
+            marginTop: theme.spacing(1),
+        },
+        footer: {
+            margin: 12,
+            marginTop: 2,
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "nowrap",
+        },
+        footerLeft: {
+            "& >*": {
+                margin: "0 2px",
             },
-            editorDiv: {
-                position: "relative",
-                flexShrink: 1,
-                margin: "0.5em",
-                border: "none",
-                borderRadius: "0.75em",
-                background: "#FFF",
-                boxShadow: style.boxShadow,
-            },
-            info: {
-                display: "flex",
-                padding: "0 4px",
-                borderBottom: "2px dashed var(--waline-border-color)",
-                borderTopLeftRadius: "0.75em",
-                borderTopRightRadius: "0.75em",
-                overflow: "hidden",
-                paddingTop: theme.spacing(1.5),
-            },
-            infoItem: {
-                width: labelWidth + "%",
-                display: "flex",
-                flexWrap: "nowrap",
-                flexDirection: "row",
-            },
-            input: {
-                flex: 1,
-                maxWidth: "100%",
-                border: "none",
-                color: style.textColor,
-                outline: "none",
-                margin: theme.spacing(1),
-            },
-            textarea: {
-                margin: "0 12px",
-                width: "calc(100% - 24px)",
-                marginTop: theme.spacing(1),
-            },
-            footer: {
-                margin: "8px 12px",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexWrap: "nowrap",
-            },
-            footerLeft: {
-                "& >*": {
-                    margin: "0 2px",
-                },
-            },
-            footerRight: {},
-            gridContainer: {
-                display: "flex",
-                flexDirection: "row",
-                flexWrap: "nowrap",
-                alignItems: "flex-start",
-                "& >div": {
-                    minWidth: Number((1000 / column).toFixed()) / 10 + "%",
-                },
-            },
-            notice: {
-                marginBottom: theme.spacing(2),
-            },
-        })
-    );
+        },
+        footerRight: {},
+        notice: {
+            marginBottom: theme.spacing(2),
+        },
+        loading: {
+            display: "flex",
+            flexDirection: "column",
+            flexWrap: "nowrap",
+            alignContent: "center",
+            alignItems: "center",
+            margin: `${theme.spacing(8)} 0`,
+        },
+    })
+);
 
 const MarkdownIcon = (props?: any) => {
     return (
@@ -194,14 +196,11 @@ const cookieLoad: (name: string) => any = (name: string) => {
 };
 
 export default function Waline(props: { path: string }) {
-    const theme = useTheme<Theme>();
-    const isPad = useMediaQuery(theme.breakpoints.between("sm", "md"));
-    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
-    const column = isMobile || isPad ? 1 : 3;
-    const classes = useStyles(column)();
-    const [loading, setLoading] = useState(false);
-    const [pageLoading, setPageLoading] = useState(false);
+    const classes = useStyles();
+    const [commentLoading, setCommentLoading] = useState(false); // 评论提交按钮是否可用
+    const [pageLoading, setPageLoading] = useState(false); // 页面是否加载完成
+    const [showNotice, setShowNotice] = useState(false);
+    const [errMsg, setErrMsg] = useState("");
 
     // 评论数据
     const [options, setOptions] = useState<CommentSubmitType>({
@@ -225,31 +224,14 @@ export default function Waline(props: { path: string }) {
         totalPages: 1,
     });
 
+    // 获取浏览器UA
     useEffect(() => {
-        if (!cookieLoad("ua")) {
-            setLoading(true);
-            axios
-                .post<string>("https://api.ahdark.com/release/user-agent")
-                .then((res) => {
-                    cookieSave("ua", res.data);
-                    setOptions({
-                        ...options,
-                        ua: res.data,
-                    });
-                    setLoading(false);
-                    setPageLoading(true);
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
-        } else {
-            setPageLoading(true);
-        }
-        console.log(
-            `Get User-Agent from ${
-                cookieLoad("ua") ? "cookie" : "api"
-            } success: ${options.ua}`
-        );
+        const userAgent = window.navigator.userAgent;
+        setOptions({
+            ...options,
+            ua: userAgent,
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // 分页系统
@@ -266,6 +248,7 @@ export default function Waline(props: { path: string }) {
         }
     };
 
+    // 评论数据获取
     useEffect(() => {
         getData({
             path: options.url,
@@ -284,7 +267,7 @@ export default function Waline(props: { path: string }) {
                 setPageLoading(true);
                 console.log(postData);
             });
-    }, [options.url, page, loading]);
+    }, [options.url, page, commentLoading]);
 
     const handleChange =
         (name: string, isSave?: boolean) =>
@@ -300,14 +283,18 @@ export default function Waline(props: { path: string }) {
 
     const submit = (e: FormEvent) => {
         e.preventDefault();
-        setLoading(true);
-        if (!options.comment || options.comment.trim().length < 5) {
-            setLoading(false);
-            throw Error("评论内容过短");
+        setCommentLoading(true);
+        if (!options.comment || options.comment.trim().length < 2) {
+            setErrMsg("评论内容过短");
+            setShowNotice(true);
+            setCommentLoading(false);
+            return;
         }
         if (!options.nick || options.nick.trim().length < 2) {
-            setLoading(false);
-            throw Error("昵称过短");
+            setErrMsg("昵称过短");
+            setShowNotice(true);
+            setCommentLoading(false);
+            return;
         }
         if (
             !options.mail ||
@@ -316,8 +303,10 @@ export default function Waline(props: { path: string }) {
                 "^[a-zA-Z0-9-_.]+@[a-zA-Z-_0-9]+.[a-zA-Z-_0-9.]+$"
             ).test(options.mail)
         ) {
-            setLoading(false);
-            throw Error("错误的邮箱");
+            setErrMsg("错误的邮箱");
+            setShowNotice(true);
+            setCommentLoading(false);
+            return;
         }
         WalineAPI.post("/comment", {
             comment: options.comment,
@@ -331,15 +320,16 @@ export default function Waline(props: { path: string }) {
             at: null,
         })
             .then((res) => {
-                if (res.data.errno !== 0) {
-                    throw new Error(res.data.errmsg);
+                if (res.status!==200) {
+                    setErrMsg(res.status+" Error");
+                    setShowNotice(true);
                 }
             })
             .catch((error) => {
                 alert(error);
             })
             .then(() => {
-                setLoading(false);
+                setCommentLoading(false);
                 setOptions({
                     ...options,
                     comment: "",
@@ -347,96 +337,113 @@ export default function Waline(props: { path: string }) {
             });
     };
 
-    let a = [];
-    for (let i = 0; i < column; i++) {
-        a.push(i);
-    }
-
     if (!pageLoading) {
-        return <>{"Loading"}</>;
+        return (
+            <Box className={classes.loading}>
+                <CircularProgress size={48} />
+            </Box>
+        );
     }
 
     return (
-        <Box className={classes.root}>
-            <Alert severity="info" className={classes.notice}>
-                <AlertTitle>注意</AlertTitle>
-                本评论系统兼容Markdown语法，请不要大量发表重复内容。
-            </Alert>
-            <Paper className={classes.editor}>
-                <form onSubmit={submit}>
-                    <Box className={classes.editorDiv} id={"editor"}>
-                        <TextField
-                            id="comment"
-                            label={options.pid === 0 ? "评论" : "回复"}
-                            multiline
-                            rows={5}
-                            className={classes.textarea}
-                            onChange={handleChange("comment")}
-                            value={options["comment"] || ""}
-                        />
-                        <Box className={classes.info}>
-                            {inputMeta.map((value) => (
-                                <Box
-                                    className={classes.infoItem}
-                                    key={value.name}
-                                >
-                                    <TextField
-                                        name={value.name}
-                                        type={value.type}
-                                        className={classes.input}
-                                        label={value.describe}
-                                        onChange={handleChange(
-                                            value.name,
-                                            true
-                                        )}
-                                        value={options[value.name] || ""}
-                                    />
+        <Fragment>
+            <Box className={classes.root}>
+                <Alert severity="info" className={classes.notice}>
+                    <AlertTitle>注意</AlertTitle>
+                    <ul style={{ margin: 0, paddingLeft: 20 }}>
+                        <li>本评论系统兼容Markdown语法</li>
+                        <li>请不要大量发表重复内容。</li>
+                    </ul>
+                </Alert>
+                <Paper className={classes.editor}>
+                    <form onSubmit={submit}>
+                        <Box className={classes.editorDiv} id={"editor"}>
+                            <TextField
+                                id="comment"
+                                label={options.pid === 0 ? "评论" : "回复"}
+                                multiline
+                                rows={5}
+                                className={classes.textarea}
+                                onChange={handleChange("comment")}
+                                value={options["comment"] || ""}
+                            />
+                            <Box className={classes.info}>
+                                {inputMeta.map((value, index) => (
+                                    <Box
+                                        className={classes.infoItem}
+                                        key={index}
+                                    >
+                                        <TextField
+                                            name={value.name}
+                                            type={value.type}
+                                            className={classes.input}
+                                            label={value.describe}
+                                            onChange={handleChange(
+                                                value.name,
+                                                true
+                                            )}
+                                            value={options[value.name] || ""}
+                                        />
+                                    </Box>
+                                ))}
+                            </Box>
+                            <Box className={classes.footer}>
+                                <Box className={classes.footerLeft}>
+                                    <Link
+                                        href={
+                                            "https://guides.github.com/features/mastering-markdown/"
+                                        }
+                                        target={"_blank"}
+                                        rel={"noopener"}
+                                    >
+                                        <IconButton title={"Markdown Support"}>
+                                            <MarkdownIcon />
+                                        </IconButton>
+                                    </Link>
                                 </Box>
-                            ))}
-                        </Box>
-                        <Box className={classes.footer}>
-                            <Box className={classes.footerLeft}>
-                                <Link
-                                    href={
-                                        "https://guides.github.com/features/mastering-markdown/"
-                                    }
-                                    target={"_blank"}
-                                    rel={"noopener"}
-                                >
-                                    <IconButton title={"Markdown Support"}>
-                                        <MarkdownIcon />
-                                    </IconButton>
-                                </Link>
-                            </Box>
-                            <Box className={classes.footerRight}>
-                                <Button
-                                    variant="contained"
-                                    type={"submit"}
-                                    disabled={loading}
-                                >
-                                    {"提交"}
-                                </Button>
+                                <Box className={classes.footerRight}>
+                                    <Button
+                                        variant="contained"
+                                        type={"submit"}
+                                        disabled={commentLoading}
+                                    >
+                                        {"提交"}
+                                    </Button>
+                                </Box>
                             </Box>
                         </Box>
-                    </Box>
-                </form>
-            </Paper>
-            {/* 评论列表 */}
-            <Grid container={true} className={classes.gridContainer}>
-                {a.map((i) => (
-                    <Grid item xs={6} key={i}>
-                        {postData.data.map((value, index) => {
-                            if (index % column === i) {
-                                return (
-                                    <CommentBlock data={value} key={index} />
-                                );
-                            } else {
-                                return <></>;
-                            }
-                        })}
-                    </Grid>
-                ))}
-            </Grid>
-        </Box>
+                    </form>
+                </Paper>
+                {/* 评论列表 */}
+                <Masonry
+                    columns={{ md: 3, sx: 1 }}
+                    spacing={2}
+                    sx={{ margin: 0 }}
+                >
+                    {postData.data.map((value, index) => (
+                        <CommentBlock data={value} key={index} />
+                    ))}
+                </Masonry>
+            </Box>
+            <Dialog
+                open={showNotice}
+                onClose={() => setShowNotice(false)}
+                aria-labelledby="form-dialog-title"
+                maxWidth="sm"
+                fullWidth
+            >
+                <DialogTitle id="form-dialog-title">Warning</DialogTitle>
+                <DialogContent dangerouslySetInnerHTML={{ __html: errMsg }} />
+
+                <DialogActions>
+                    <Button
+                        onClick={() => setShowNotice(false)}
+                        color={"primary"}
+                    >
+                        关闭
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </Fragment>
     );
 }

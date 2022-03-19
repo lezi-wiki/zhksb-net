@@ -3,7 +3,7 @@ import { Box, Link, Typography } from "@mui/material";
 
 export default function Footer() {
     return (
-        <Box component={"footer"} textAlign={"center"}>
+        <Box component={"footer"} textAlign={"center"} sx={{ margin: 2 }}>
             <Link
                 href={"https://github.com/zhk-sb/zhk"}
                 rel={"noopener"}

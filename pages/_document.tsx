@@ -2,8 +2,7 @@ import React from "react";
 import Document, { Head, Html, Main, NextScript } from "next/document";
 import { theme } from "../theme";
 import { createEmotionCache } from "./_app";
-import createEmotionServer from '@emotion/server/create-instance';
-
+import createEmotionServer from "@emotion/server/create-instance";
 
 export default class MyDocument extends Document {
     render() {
@@ -15,6 +14,19 @@ export default class MyDocument extends Document {
                         content={theme.palette.primary.main}
                     />
                     <link rel={"icon"} href={"/favicon.ico"} />
+                    <link
+                        rel="preconnect"
+                        href="https://fonts.sourcegcdn.com"
+                    />
+                    <link
+                        rel="preconnect"
+                        href="https://fonts-gstatic.sourcegcdn.com"
+                        crossOrigin={"true"}
+                    />
+                    <link
+                        href="https://fonts.sourcegcdn.com/css2?family=Noto+Sans+SC:wght@100;300;400;500;700;900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+                        rel="stylesheet"
+                    />
                     {/* Inject MUI styles first to match with the prepend: true configuration. */}
                     {(this.props as any).emotionStyleTags}
                 </Head>

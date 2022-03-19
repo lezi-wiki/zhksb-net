@@ -1,4 +1,4 @@
-# 关于项目
+# About
 
 **让更多人知道张贺凯这个傻逼，让更少的人去购买他的云服务**
 
@@ -16,7 +16,7 @@
 ![](https://alpha-q3.sourcegcdn.com/2022/03/18/bz6i7f8H.png)
 
 
-## 主页介绍
+## Introduction
 
 **我是张大佬，我就是个傻逼，千万不要买我的服务器，我每三天就必须跑路一次，没办法，生理需求。**
 
@@ -24,7 +24,7 @@
 
 此主页可以进行二次开发，但需要**遵循[GNU GPL v3.0](https://github.com/zhk-sb/zhk/blob/main/LICENSE)**
 
-### 功能介绍
+### Functions
 
 #### Design
 
@@ -40,15 +40,17 @@
 
 本主页头像系统接入[Gravatar](https://gravatar.com/)头像系统，只要您在[Gravatar](https://gravatar.com/)有上传过您的头像，本主页的评论系统会自动拉取您的头像
 
-# 项目维护
+## Contributer
 
-### 主要维护者
-* [AHdark](https://ahdark.com) 本项目的发起者、编写者、主要维护者。
-* [造物主による](https://xxb-dev.cn) 为本项目撰写说明文档。
+### Main Maintainer
 
-### 贡献者
+- [AHdark](https://ahdark.com)
+- [造物主による](https://xxb-dev.cn)
+- [bilibilixkz](https://xkz.stuffspace.sky233.com)
 
-* [purofle](https://github.com/purofle) 为本项目说明文档提交格式化Pull Request
+### Commiter
+
+- [purofle](https://github.com/purofle) 为本项目说明文档提交格式化Pull Request
 
 
 

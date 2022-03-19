@@ -5,6 +5,8 @@ import { createStyles, makeStyles } from "@mui/styles";
 import { Box, Container, CssBaseline, Theme, Typography } from "@mui/material";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import counter, { increment } from "../store/counter";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -38,6 +40,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function Home() {
     const classes = useStyles();
+    const count = useAppSelector((store) => store.counter);
+    const dispatch = useAppDispatch();
 
     return (
         <>

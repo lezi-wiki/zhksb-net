@@ -13,7 +13,7 @@
 *注：本项目仅在GitHub发布，在其他平台上下载的安全性不可保证*
 | **文件名称**  | **MD5** | **检测时间/版本** |
 |:-------:|:------:|:------:|
-| zhk-main.zip    | 	e82c91acd2089dfffa47b8ab86c2740f（不包含ReadMe|2020/3/18 |
+| zhk-main.zip    | 	e82c91acd2089dfffa47b8ab86c2740f(不包含ReadMe)|2022/3/18 |
 > *以上数据来自 [腾讯哈勃系统](https://habo.qq.com/file/showdetail?pk=ADcGYV1qB2AIPVs6U2U%3D) （如下图
 
 ![](https://alpha-q3.sourcegcdn.com/2022/03/18/bz6i7f8H.png)

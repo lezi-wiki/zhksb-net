@@ -5,14 +5,12 @@ import { createStyles, makeStyles } from "@mui/styles";
 import { Box, Container, CssBaseline, Theme, Typography } from "@mui/material";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import counter, { increment } from "../store/counter";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         main: {
-            height: "100%",
-            minHeight: "100vh",
+            // height: "100%",
+            minHeight: "calc(100vh - 28px)",
             marginBottom: -60,
             display: "flex",
             flexDirection: "column",
@@ -40,8 +38,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function Home() {
     const classes = useStyles();
-    const count = useAppSelector((store) => store.counter);
-    const dispatch = useAppDispatch();
 
     return (
         <>
@@ -52,7 +48,7 @@ export default function Home() {
                 />
                 <link
                     rel={"preload"}
-                    href={"https://q3.a1pic.cn/2022/02/08/M0wM.png"}
+                    href={"https://alpha-q3.sourcegcdn.com/2022/02/08/M0wM.png"}
                     as={"image"}
                 />
                 <link rel="prefetch" href="//stat.ahdark.com" />
@@ -69,6 +65,7 @@ export default function Home() {
 					 className={classes.avatar}
 					 />
 					 */}
+                    
                     <Typography
                         variant={"h3"}
                         component={"h1"}

@@ -12,14 +12,13 @@ import {
 } from "@mui/material";
 import { Datum } from "../../types/Comment/CommentListType";
 import dayjs from "dayjs";
+import Markdown from "markdown-to-jsx";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {},
         card: {
-            margin: theme.spacing(1),
-            marginTop: theme.spacing(2),
-            marginBottom: theme.spacing(2),
+            margin: `${theme.spacing(1)} 0`,
         },
         content: {
             "& *": {
@@ -34,15 +33,10 @@ export default function CommentBlock(props: { data: Datum }) {
     const classes = useStyles();
     const time = dayjs(props.data.insertedAt);
 
-    const showHtml = (htmlString: string) => {
-        const html = { __html: htmlString };
-        return <div dangerouslySetInnerHTML={html}></div>;
-    };
-
     return (
         <Card className={classes.card} component={"article"}>
             <CardHeader
-                avatar={<Avatar src={props.data.avatar} alt={"Avatar"} />}
+                avatar={<Avatar src={props.data.avatar.replace(RegExp("s=\\d+","ig"), "s=48")} alt={"Avatar"} />}
                 title={
                     <>
                         {props.data.link ? (
@@ -70,19 +64,23 @@ export default function CommentBlock(props: { data: Datum }) {
                         <Typography
                             variant={"subtitle2"}
                             component={"span"}
-                            sx={{ color: "#b9b9b9", ml:1 }}
+                            sx={{ color: "#b9b9b9", ml: 1 }}
+                            fontWeight={"normal"}
                         >
                             {time.format("YYYY/MM/DD HH:mm")}
                         </Typography>
                     </>
                 }
                 subheader={
-                <>
-                    <Chip label={props.data.os} sx={{mr:1}} size={"small"} />
-                    <Chip label={props.data.browser} size={"small"} />
-                </>
+                    <>
+                        <Chip
+                            label={props.data.os}
+                            sx={{ mr: 1 }}
+                            size={"small"}
+                        />
+                        <Chip label={props.data.browser.replace(RegExp("([\\d.]+)$"), " $1")/* 版本号加空格 */} size={"small"} />
+                    </>
                 }
-                sx={{ pb: 1 }}
             />
             <CardContent sx={{ pt: 0, pb: 0 }} component={"main"}>
                 <Typography
@@ -90,7 +88,7 @@ export default function CommentBlock(props: { data: Datum }) {
                     color="text.secondary"
                     className={classes.content}
                 >
-                    {showHtml(props.data.comment)}
+                    <Markdown>{props.data.comment}</Markdown>
                 </Typography>
             </CardContent>
         </Card>

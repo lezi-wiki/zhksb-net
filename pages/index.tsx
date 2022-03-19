@@ -61,8 +61,6 @@ export default function Home() {
             <CssBaseline />
             <NavBar />
             <Container maxWidth={"lg"} fixed={true}>
-                {count}
-                <button onClick={() => dispatch(increment)}>Test</button>
                 <Box className={classes.main}>
                     {/*
 					 <img

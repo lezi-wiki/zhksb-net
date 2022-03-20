@@ -25,6 +25,13 @@ const useStyles = makeStyles((theme: Theme) =>
                 margin: 0,
                 padding: 0,
             },
+            "& a": {
+                textDecoration: "none",
+                color: theme.palette.primary.main,
+            },
+            "& ul,ol": {
+                paddingLeft: theme.spacing(3),
+            },
         },
     })
 );
@@ -36,7 +43,15 @@ export default function CommentBlock(props: { data: Datum }) {
     return (
         <Card className={classes.card} component={"article"}>
             <CardHeader
-                avatar={<Avatar src={props.data.avatar.replace(RegExp("s=\\d+","ig"), "s=48")} alt={"Avatar"} />}
+                avatar={
+                    <Avatar
+                        src={props.data.avatar.replace(
+                            RegExp("s=\\d+", "ig"),
+                            "s=48"
+                        )}
+                        alt={"Avatar"}
+                    />
+                }
                 title={
                     <>
                         {props.data.link ? (
@@ -78,7 +93,15 @@ export default function CommentBlock(props: { data: Datum }) {
                             sx={{ mr: 1 }}
                             size={"small"}
                         />
-                        <Chip label={props.data.browser.replace(RegExp("([\\d.]+)$"), " $1")/* 版本号加空格 */} size={"small"} />
+                        <Chip
+                            label={
+                                props.data.browser.replace(
+                                    RegExp("([\\d.]+)$"),
+                                    " $1"
+                                ) /* 版本号加空格 */
+                            }
+                            size={"small"}
+                        />
                     </>
                 }
             />

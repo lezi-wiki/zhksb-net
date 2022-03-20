@@ -62,8 +62,8 @@ export default function NavBar() {
     const theme = useTheme<Theme>();
     const classes = useStyles();
 
-    const isSmallScreen: boolean = useMediaQuery(theme.breakpoints.down("sm"));
-    const [drawerOpen, setDrawerOpen] = useState<boolean>(true);
+    const isSmallScreen: boolean = useMediaQuery(theme.breakpoints.down("md"));
+    const [drawerOpen, setDrawerOpen] = useState<boolean>(!isSmallScreen);
 
     useEffect(() => {
         console.log(`[UI] Small screen ${isSmallScreen.toString()}`);
@@ -130,8 +130,8 @@ export default function NavBar() {
                     variant="persistent"
                     anchor="left"
                     open={drawerOpen}
-                    classes={{
-                        paper: classes.drawerPaper,
+                    PaperProps={{
+                        className: classes.drawerPaper,
                     }}
                 >
                     <Toolbar />

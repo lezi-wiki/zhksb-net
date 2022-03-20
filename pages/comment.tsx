@@ -3,7 +3,6 @@ import { createStyles, makeStyles } from "@mui/styles";
 import { Box, Container, CssBaseline, Theme, Typography } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { GetServerSideProps } from "next";
 import NavBar from "../components/NavBar";
 import Waline from "../components/Waline";
 import Footer from "../components/Footer";
@@ -25,19 +24,9 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export const getServerSideProps: GetServerSideProps = async (context) => ({
-    props: {
-        headers: context.req.headers,
-    },
-});
-
-export default function Comment(props: any): JSX.Element {
+export default function Comment(): JSX.Element {
     const classes = useStyles();
     const router = useRouter();
-
-    const host = props.headers.hasOwnProperty("x-forwarded-host")
-        ? props.headers["x-forwarded-host"]
-        : props.headers["host"];
 
     return (
         <>

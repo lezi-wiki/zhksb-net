@@ -65,7 +65,7 @@ export default function Home() {
 					 className={classes.avatar}
 					 />
 					 */}
-                    
+
                     <Typography
                         variant={"h3"}
                         component={"h1"}

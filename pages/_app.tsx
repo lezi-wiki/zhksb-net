@@ -1,12 +1,11 @@
-import type { AppProps }             from "next/app";
-import { ThemeProvider }             from "@mui/styles";
-import { theme }                     from "../theme";
-import React, { Component, FC }      from "react";
-import Script                        from "next/script";
-import { wrapper }                   from "../store/store";
+import type { AppProps } from "next/app";
+import { ThemeProvider } from "@mui/styles";
+import { theme } from "../theme";
+import React, { Component, FC } from "react";
+import Script from "next/script";
+import { wrapper } from "../store/store";
 import createCache, { EmotionCache } from "@emotion/cache";
-import { CacheProvider }             from "@emotion/react";
-import { Provider }                  from "react-redux";
+import { CacheProvider } from "@emotion/react";
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();

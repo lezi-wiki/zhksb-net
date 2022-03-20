@@ -89,15 +89,25 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         info: {
             display: "flex",
+            flexDirection: "row",
+            flexWrap: "nowrap",
+            alignItems: "baseline",
             padding: "0 4px",
             borderBottom: "2px dashed var(--waline-border-color)",
             borderTopLeftRadius: "0.75em",
             borderTopRightRadius: "0.75em",
             overflow: "hidden",
             paddingTop: theme.spacing(1.5),
+            [theme.breakpoints.down("md")]: {
+                flexDirection: "column",
+                alignItems: "center",
+            },
         },
         infoItem: {
             width: labelWidth + "%",
+            [theme.breakpoints.down("md")]: {
+                width: "100%",
+            },
             display: "flex",
             flexWrap: "nowrap",
             flexDirection: "row",
@@ -320,8 +330,8 @@ export default function Waline(props: { path: string }) {
             at: null,
         })
             .then((res) => {
-                if (res.status!==200) {
-                    setErrMsg(res.status+" Error");
+                if (res.status !== 200) {
+                    setErrMsg(res.status + " Error");
                     setShowNotice(true);
                 }
             })

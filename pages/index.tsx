@@ -10,8 +10,8 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         main: {
             // height: "100%",
-            minHeight: "calc(100vh - 28px)",
-            marginBottom: -60,
+            minHeight: "calc(100vh - 24px)",
+            marginBottom: theme.spacing(-8),
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -65,6 +65,11 @@ export default function Home() {
 					 className={classes.avatar}
 					 />
 					 */}
+                    <img
+                        src={"https://alpha-q3.sourcegcdn.com/2022/03/20/MODBRTFu.png"}
+                        alt="Logo"
+                        className={classes.avatar}
+                    />
 
                     <Typography
                         variant={"h3"}

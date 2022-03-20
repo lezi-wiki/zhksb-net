@@ -16,6 +16,7 @@ import {
     SvgIcon,
     TextField,
     Theme,
+    Typography,
 } from "@mui/material";
 import WalineAPI from "../../middleware/WalineAPI";
 import { CommentListType } from "../../types/Comment/CommentListType";
@@ -23,6 +24,10 @@ import { CommentSubmitType } from "../../types/Comment/CommentSubmitType";
 import CommentBlock from "./CommentBlock";
 import cookie from "react-cookies";
 import Masonry from "@mui/lab/Masonry";
+import { useRouter } from "next/router";
+import KeyboardArrowLeftRoundedIcon from "@mui/icons-material/KeyboardArrowLeftRounded";
+import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRightRounded";
+import ErrorRoundedIcon from "@mui/icons-material/ErrorRounded";
 
 const style = {
     border: "1px solid",
@@ -151,6 +156,16 @@ const useStyles = makeStyles((theme: Theme) =>
             alignItems: "center",
             margin: `${theme.spacing(8)} 0`,
         },
+        pageControl: {
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            flexWrap: "nowrap",
+        },
+        pageButton: {
+            minWidth: 30,
+        },
     })
 );
 
@@ -207,8 +222,9 @@ const cookieLoad: (name: string) => any = (name: string) => {
 
 export default function Waline(props: { path: string }) {
     const classes = useStyles();
-    const [commentLoading, setCommentLoading] = useState(false); // 评论提交按钮是否可用
+    const [submitLoading, setSubmitLoading] = useState(false); // 评论提交按钮是否可用
     const [pageLoading, setPageLoading] = useState(false); // 页面是否加载完成
+    const [isCommentLoading, setCommentLoading] = useState(false); // 评论内容是否加载中
     const [showNotice, setShowNotice] = useState(false);
     const [errMsg, setErrMsg] = useState("");
 
@@ -245,7 +261,13 @@ export default function Waline(props: { path: string }) {
     }, []);
 
     // 分页系统
-    const [page, setPage] = useState<number>(1);
+    const router = useRouter();
+    const [page, setPage] = useState<number>(Number(router.query.page) || 1);
+
+    useEffect(() => {
+        console.log("[Waline]", "It is in page " + page + " now.");
+    }, [page]);
+
     const [totalPage, setTotalPage] = useState<number>(0);
     const nextPage = () => {
         if (page + 1 <= totalPage) {
@@ -260,6 +282,7 @@ export default function Waline(props: { path: string }) {
 
     // 评论数据获取
     useEffect(() => {
+        setCommentLoading(true);
         getData({
             path: options.url,
             page: page,
@@ -275,9 +298,9 @@ export default function Waline(props: { path: string }) {
             })
             .then(() => {
                 setPageLoading(true);
-                console.log(postData);
+                setCommentLoading(false);
             });
-    }, [options.url, page, commentLoading]);
+    }, [options.url, page, submitLoading]);
 
     const handleChange =
         (name: string, isSave?: boolean) =>
@@ -293,17 +316,23 @@ export default function Waline(props: { path: string }) {
 
     const submit = (e: FormEvent) => {
         e.preventDefault();
-        setCommentLoading(true);
+        setSubmitLoading(true);
         if (!options.comment || options.comment.trim().length < 2) {
             setErrMsg("评论内容过短");
             setShowNotice(true);
-            setCommentLoading(false);
+            setSubmitLoading(false);
             return;
         }
         if (!options.nick || options.nick.trim().length < 2) {
             setErrMsg("昵称过短");
             setShowNotice(true);
-            setCommentLoading(false);
+            setSubmitLoading(false);
+            return;
+        }
+        if (!options.nick || options.nick.trim().length > 20) {
+            setErrMsg("昵称过长");
+            setShowNotice(true);
+            setSubmitLoading(false);
             return;
         }
         if (
@@ -315,7 +344,7 @@ export default function Waline(props: { path: string }) {
         ) {
             setErrMsg("错误的邮箱");
             setShowNotice(true);
-            setCommentLoading(false);
+            setSubmitLoading(false);
             return;
         }
         WalineAPI.post("/comment", {
@@ -339,7 +368,7 @@ export default function Waline(props: { path: string }) {
                 alert(error);
             })
             .then(() => {
-                setCommentLoading(false);
+                setSubmitLoading(false);
                 setOptions({
                     ...options,
                     comment: "",
@@ -415,7 +444,7 @@ export default function Waline(props: { path: string }) {
                                     <Button
                                         variant="contained"
                                         type={"submit"}
-                                        disabled={commentLoading}
+                                        disabled={submitLoading}
                                     >
                                         {"提交"}
                                     </Button>
@@ -425,15 +454,43 @@ export default function Waline(props: { path: string }) {
                     </form>
                 </Paper>
                 {/* 评论列表 */}
-                <Masonry
-                    columns={{ md: 3, sx: 1 }}
-                    spacing={2}
-                    sx={{ margin: 0 }}
-                >
-                    {postData.data.map((value, index) => (
-                        <CommentBlock data={value} key={index} />
-                    ))}
-                </Masonry>
+                {isCommentLoading ? (
+                    <Box className={classes.loading}>
+                        <CircularProgress size={48} />
+                    </Box>
+                ) : (
+                    <Masonry
+                        columns={{ md: 3, sx: 1 }}
+                        spacing={2}
+                        sx={{ margin: 0 }}
+                    >
+                        {postData.data.map((value, index) => (
+                            <CommentBlock data={value} key={index} />
+                        ))}
+                    </Masonry>
+                )}
+                {/* 页面控制 */}
+                <Paper className={classes.pageControl}>
+                    <IconButton
+                        onClick={() => previousPage()}
+                        disabled={!(page - 1 >= 1)}
+                    >
+                        <KeyboardArrowLeftRoundedIcon />
+                    </IconButton>
+                    <Typography
+                        variant={"body2"}
+                        color={"inherit"}
+                        sx={{ margin: 0, pt: 1, pb: 1, pl: 2, pr: 2 }}
+                    >
+                        {`${page} / ${totalPage}`}
+                    </Typography>
+                    <IconButton
+                        onClick={() => nextPage()}
+                        disabled={!(page + 1 <= totalPage)}
+                    >
+                        <KeyboardArrowRightRoundedIcon />
+                    </IconButton>
+                </Paper>
             </Box>
             <Dialog
                 open={showNotice}
@@ -442,7 +499,24 @@ export default function Waline(props: { path: string }) {
                 maxWidth="sm"
                 fullWidth
             >
-                <DialogTitle id="form-dialog-title">Warning</DialogTitle>
+                <DialogTitle
+                    id="form-dialog-title"
+                    sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                    }}
+                >
+                    <ErrorRoundedIcon sx={{ margin: 1 }} />
+                    <Typography
+                        variant={"h6"}
+                        component={"span"}
+                        sx={{ margin: 1 }}
+                        fontWeight={"bold"}
+                    >
+                        {"Error"}
+                    </Typography>
+                </DialogTitle>
                 <DialogContent dangerouslySetInnerHTML={{ __html: errMsg }} />
 
                 <DialogActions>

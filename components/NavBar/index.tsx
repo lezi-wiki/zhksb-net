@@ -4,10 +4,14 @@ import {
     AppBar,
     Box,
     CssBaseline,
+    Divider,
     Drawer,
     IconButton,
     Link,
     List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
     Theme,
     Toolbar,
     Typography,
@@ -21,6 +25,8 @@ import Head from "next/head";
 import { RouteDataItem } from "../../types/RouteDataType";
 import NavItem from "./NavItem";
 import NextLink from "next/link";
+import BookRoundedIcon from "@mui/icons-material/BookRounded";
+import HomeRepairServiceRoundedIcon from "@mui/icons-material/HomeRepairServiceRounded";
 
 const drawerWidth = 240;
 
@@ -140,6 +146,35 @@ export default function NavBar() {
                             {RouteData.map((item, index) => (
                                 <NavItem item={item} key={index} />
                             ))}
+                            <Divider />
+                            <Link
+                                href={"https://blog.zhksb.net"}
+                                rel={"noopener self"}
+                                target={"_blank"}
+                                underline={"none"}
+                                color={"inherit"}
+                            >
+                                <ListItem button>
+                                    <ListItemIcon>
+                                        <BookRoundedIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary={"Blog"} />
+                                </ListItem>
+                            </Link>
+                            <Link
+                                href={"https://zhk.nmsl.sb"}
+                                rel={"noopener self"}
+                                target={"_blank"}
+                                underline={"none"}
+                                color={"inherit"}
+                            >
+                                <ListItem button>
+                                    <ListItemIcon>
+                                        <HomeRepairServiceRoundedIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary={"ToolBox"} />
+                                </ListItem>
+                            </Link>
                         </List>
                     </div>
                 </Drawer>

@@ -19,21 +19,21 @@
     "axios": "^0.25.0",
     "dayjs": "^1.10.7",
     "markdown-to-jsx": "^7.1.7",
-    "next": "12.1.5",
+    "next": "12.1.0",
     "next-redux-wrapper": "^7.0.5",
-    "react": "18.1.0",
+    "react": "17.0.2",
     "react-cookies": "^0.1.1",
     "react-dom": "17.0.2",
     "react-redux": "^7.2.6",
-    "redux": "^4.2.0"
+    "redux": "^4.1.2"
   },
   "devDependencies": {
-    "@types/node": "17.0.30",
+    "@types/node": "17.0.16",
     "@types/react": "17.0.39",
     "@types/react-cookies": "^0.1.0",
     "eslint": "8.8.0",
     "eslint-config-next": "12.0.10",
     "prettier": "^2.5.1",
-    "typescript": "4.6.4"
+    "typescript": "4.5.5"
   }
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FC } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import { Box, Container, CssBaseline, Theme, Typography } from "@mui/material";
 import Head from "next/head";
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export default function Comment(): JSX.Element {
+const Comment:FC = () => {
     const classes = useStyles();
     const router = useRouter();
 
@@ -60,3 +60,5 @@ export default function Comment(): JSX.Element {
         </>
     );
 }
+
+export default Comment;

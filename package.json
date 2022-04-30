@@ -19,7 +19,7 @@
     "axios": "^0.25.0",
     "dayjs": "^1.10.7",
     "markdown-to-jsx": "^7.1.7",
-    "next": "12.1.0",
+    "next": "12.1.5",
     "next-redux-wrapper": "^7.0.5",
     "react": "17.0.2",
     "react-cookies": "^0.1.1",

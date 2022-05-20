@@ -1,17 +1,21 @@
 import React from "react";
-import { RouteDataItem } from "../../types/RouteDataType";
 import { ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import Link from "next/link";
+import { SvgIconComponent } from "@mui/icons-material";
 
-export default function NavItem(props: { item: RouteDataItem }) {
-    return (
-        <Link href={props.item.path} passHref={true}>
-            <ListItemButton>
-                <ListItemIcon>
-                    <props.item.icon />
-                </ListItemIcon>
-                <ListItemText primary={props.item.name} />
-            </ListItemButton>
-        </Link>
-    );
-}
+const NavItem: React.FC<{
+    path: string;
+    name: string;
+    icon: SvgIconComponent;
+}> = (props) => (
+    <Link href={props.path} passHref={true}>
+        <ListItemButton>
+            <ListItemIcon>
+                <props.icon />
+            </ListItemIcon>
+            <ListItemText primary={props.name} />
+        </ListItemButton>
+    </Link>
+);
+
+export default NavItem;

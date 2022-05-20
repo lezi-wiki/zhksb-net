@@ -40,11 +40,6 @@ const Comment: FC = () => {
         <>
             <Head>
                 <meta name={"description"} content={"评论一下张大佬吧"} />
-                <link
-                    rel="preload"
-                    href="https://q3.a1pic.cn/2022/02/08/M0wM.png"
-                    as="image"
-                />
                 <link rel="prefetch" href="//stat.ahdark.com" />
             </Head>
 

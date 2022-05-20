@@ -10,7 +10,7 @@ import {
     Theme,
     Typography,
 } from "@mui/material";
-import { Datum } from "../../types/Comment/CommentListType";
+import { CommentData } from "../../model/Comment/commentListType";
 import dayjs from "dayjs";
 import Markdown from "markdown-to-jsx";
 
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export default function CommentBlock(props: { data: Datum }) {
+export default function CommentBlock(props: { data: CommentData }) {
     const classes = useStyles();
     const time = dayjs(props.data.insertedAt);
 

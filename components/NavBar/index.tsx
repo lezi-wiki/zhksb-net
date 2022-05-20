@@ -17,13 +17,14 @@ import {
     Typography,
     useMediaQuery,
 } from "@mui/material";
-import { RouteData } from "../../router";
-import MenuIcon from "@mui/icons-material/Menu";
-import GitHubIcon from "@mui/icons-material/GitHub";
 import NavItem from "./NavItem";
 import NextLink from "next/link";
-import BookRoundedIcon from "@mui/icons-material/BookRounded";
 import { useAppSelector } from "../../store/hooks";
+import MenuIcon from "@mui/icons-material/MenuRounded";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import BookRoundedIcon from "@mui/icons-material/BookRounded";
+import HomeIcon from "@mui/icons-material/HomeRounded";
+import ForumIcon from "@mui/icons-material/ForumRounded";
 
 const drawerWidth = 240;
 
@@ -125,9 +126,12 @@ export default function NavBar() {
                 <Toolbar />
                 <div className={classes.drawerContainer}>
                     <List>
-                        {RouteData.map((item, index) => (
-                            <NavItem item={item} key={index} />
-                        ))}
+                        <NavItem name={"Home"} icon={HomeIcon} path={"/"} />
+                        <NavItem
+                            name={"Comment"}
+                            icon={ForumIcon}
+                            path={"/comment"}
+                        />
                         <Divider />
                         <Link
                             href={"https://blog.zhksb.net"}

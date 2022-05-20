@@ -1,34 +1,20 @@
-import {
-    Action,
-    configureStore,
-    createSlice,
-    ThunkAction,
-} from "@reduxjs/toolkit";
-import { createWrapper, HYDRATE } from "next-redux-wrapper";
+import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
+import { createWrapper } from "next-redux-wrapper";
 import view from "./view";
-
-export const hydrateSlice = createSlice({
-    name: "hydrate",
-    initialState: {} as any,
-    reducers: {},
-    extraReducers: {
-        [HYDRATE]: (state, action) => {
-            console.log("HYDRATE", action.payload);
-            return {
-                ...state,
-                ...action.payload.subject,
-            };
-        },
-    },
-});
+import hydrate from "./hydrate";
+import commentInfo from "../service/CommentInfo";
+import thunk from "redux-thunk";
 
 const store = () =>
     configureStore({
         reducer: {
-            hydrate: hydrateSlice.reducer,
+            hydrate,
             view,
+            [commentInfo.reducerPath]: commentInfo.reducer,
         },
         devTools: process.env.NODE_ENV === "development",
+        middleware: (getDefaultMiddleware) =>
+            getDefaultMiddleware().concat(thunk).concat(commentInfo.middleware),
     });
 
 export type AppStore = ReturnType<typeof store>;

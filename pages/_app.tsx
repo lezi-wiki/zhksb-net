@@ -8,6 +8,7 @@ import createCache, { EmotionCache } from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
 import Head from "next/head";
 import { useAppSelector } from "../store/hooks";
+import { SnackbarProvider } from "notistack";
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -33,17 +34,26 @@ const MyApp: FC<
         <>
             <Head>
                 <title>{title !== null ? `${title} - ZHKSB` : "ZHKSB"}</title>
+                <meta
+                    name="viewport"
+                    content="initial-scale=1, width=device-width"
+                />
             </Head>
             <CacheProvider value={emotionCache}>
-                <Head>
-                    <meta
-                        name="viewport"
-                        content="initial-scale=1, width=device-width"
-                    />
-                </Head>
                 <ThemeProvider theme={theme}>
-                    <Script id={"matomo"} strategy="lazyOnload">
-                        {`var _paq=window._paq=window._paq||[];
+                    <SnackbarProvider
+                        anchorOrigin={{
+                            horizontal: "right",
+                            vertical: "top",
+                        }}
+                        autoHideDuration={2000}
+                    >
+                        <Component {...pageProps} />
+                    </SnackbarProvider>
+                </ThemeProvider>
+            </CacheProvider>
+            <Script id={"matomo"} strategy="lazyOnload">
+                {`var _paq=window._paq=window._paq||[];
 _paq.push(["setCookieDomain","*.www.zhksb.net"]);
 _paq.push(["setDomains",["*.www.zhksb.net","*.zhksb.net"]]);
 _paq.push(["enableCrossDomainLinking"]);
@@ -58,10 +68,7 @@ _paq.push(["enableLinkTracking"]);
     g.src=u+"matomo.js";
     s.parentNode.insertBefore(g,s)
 })();`}
-                    </Script>
-                    <Component {...pageProps} />
-                </ThemeProvider>
-            </CacheProvider>
+            </Script>
         </>
     );
 };

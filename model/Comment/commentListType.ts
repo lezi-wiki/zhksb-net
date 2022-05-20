@@ -1,22 +1,24 @@
-export interface CommentListType {
+export default interface CommentListType {
     page: number;
     totalPages: number;
     pageSize: number;
     count: number;
-    data: Datum[];
+    data: CommentData[];
 }
 
-export interface Datum {
+export interface CommentData {
+    like: number;
     link: string;
     nick: string;
-    pid: null;
-    rid: null;
+    addr: string;
+    pid: number | null;
+    rid: number | null;
     comment: string;
     insertedAt: Date;
     status: string;
-    objectId: string;
+    objectId: number;
     browser: string;
     os: string;
     avatar: string;
-    children?: Datum[];
+    children: CommentData[];
 }

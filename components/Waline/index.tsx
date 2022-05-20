@@ -6,29 +6,25 @@ import {
     Box,
     Button,
     CircularProgress,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
     IconButton,
     Link,
+    Pagination,
     Paper,
     SvgIcon,
     TextField,
     Theme,
-    Typography,
 } from "@mui/material";
-import WalineAPI from "../../middleware/WalineAPI";
-import { CommentListType } from "../../types/Comment/CommentListType";
-import { CommentSubmitType } from "../../types/Comment/CommentSubmitType";
+import type CommentSubmitType from "../../model/Comment/commentSubmitType";
 import cookie from "react-cookies";
 import Masonry from "@mui/lab/Masonry";
 import { useRouter } from "next/router";
-import KeyboardArrowLeftRoundedIcon from "@mui/icons-material/KeyboardArrowLeftRounded";
-import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRightRounded";
-import ErrorRoundedIcon from "@mui/icons-material/ErrorRounded";
-
-const CommentBlock = React.lazy(() => import("./CommentBlock"));
+import CommentBlock from "./CommentBlock";
+import {
+    useGetCountQuery,
+    useListCommentsQuery,
+    useSendCommentMutation,
+} from "../../service/CommentInfo";
+import { useSnackbar } from "notistack";
 
 const style = {
     border: "1px solid",
@@ -166,6 +162,8 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         pageButton: {
             minWidth: 30,
+            paddingTop: theme.spacing(0.5),
+            paddingBottom: theme.spacing(0.5),
         },
     })
 );
@@ -174,34 +172,12 @@ const MarkdownIcon = (props?: any) => {
     return (
         <SvgIcon {...props} viewBox="0 0 1280 1024">
             <path
-                d="M1187.7 905.84H92.3C41.4 905.84 0 864.44 0 813.54V210.46c0-50.9 41.4-92.3 92.3-92.3h1095.38c50.9 0 92.3 41.4 92.3 92.3v603.08c0.02 50.9-41.38 92.3-92.28 92.3z m-880-184.6v-240l123.08 153.84 123.08-153.84v240h123.08V302.76h-123.08l-123.08 153.84-123.08-153.84H184.62v418.46h123.08zM1132.3 512h-123.08V302.76h-123.08V512h-123.08l184.62 215.38L1132.3 512z"
+                d="M1187.7 905.84H92.3C41.4 905.84 0 864.44 0 813.54V210.46c0-50.9 41.4-92.3 92.3-92.3h1095.38c50.9 0 92.3 41.4 92.3 92.3v603.08c0.02 50.9-41.38 92.3-92.28 92.3z m-880-184.6v-240l123.08 153.84 123.08-153.84v240h123.08V302.76h-123.08l-123.08 153.84-123.08-53.84H184.62v418.46h123.08zM1132.3 512h-123.08V302.76h-123.08V512h-123.08l184.62 215.38L1132.3 512z"
                 fill=""
                 p-id="2049"
             />
         </SvgIcon>
     );
-};
-
-const getData = async ({
-    page,
-    pageSize,
-    path,
-}: {
-    page: number;
-    pageSize: number;
-    path: string;
-}) => {
-    const res = await WalineAPI.get("/comment", {
-        params: {
-            path: path,
-            pageSize: pageSize,
-            page: page,
-        },
-    }).catch((err) => {
-        throw err;
-    });
-
-    return res.data;
 };
 
 // Cookie操作
@@ -223,11 +199,7 @@ const cookieLoad: (name: string) => any = (name: string) => {
 
 export default function Waline(props: { path: string }) {
     const classes = useStyles();
-    const [submitLoading, setSubmitLoading] = useState(false); // 评论提交按钮是否可用
-    const [pageLoading, setPageLoading] = useState(false); // 页面是否加载完成
-    const [isCommentLoading, setCommentLoading] = useState(false); // 评论内容是否加载中
-    const [showNotice, setShowNotice] = useState(false);
-    const [errMsg, setErrMsg] = useState("");
+    const { enqueueSnackbar } = useSnackbar();
 
     // 评论数据
     const [options, setOptions] = useState<CommentSubmitType>({
@@ -240,15 +212,6 @@ export default function Waline(props: { path: string }) {
         rid: null,
         url: props.path,
         at: null,
-    });
-
-    // 后端数据
-    const [postData, setData] = useState<CommentListType>({
-        count: 5,
-        data: [],
-        page: 1,
-        pageSize: 100,
-        totalPages: 1,
     });
 
     // 获取浏览器UA
@@ -265,43 +228,22 @@ export default function Waline(props: { path: string }) {
     const router = useRouter();
     const [page, setPage] = useState<number>(Number(router.query.page) || 1);
 
+    // 后端数据
+    const { data, isLoading, refetch } = useListCommentsQuery({
+        path: options.url,
+        page: page,
+        pageSize: 10,
+    });
+
     useEffect(() => {
         console.log("[Waline]", "It is in page " + page + " now.");
     }, [page]);
 
-    const [totalPage, setTotalPage] = useState<number>(0);
-    const nextPage = () => {
-        if (page + 1 <= totalPage) {
-            setPage(page + 1);
-        }
-    };
-    const previousPage = () => {
-        if (page - 1 >= 1) {
-            setPage(page - 1);
-        }
-    };
-
-    // 评论数据获取
-    useEffect(() => {
-        setCommentLoading(true);
-        getData({
-            path: options.url,
-            page: page,
-            pageSize: 10,
-        })
-            .then((res) => {
-                setData(res);
-                setTotalPage(res.totalPages);
-            })
-            .catch((err) => {
-                console.error(err);
-                alert(err);
-            })
-            .then(() => {
-                setPageLoading(true);
-                setCommentLoading(false);
-            });
-    }, [options.url, page, submitLoading]);
+    const { data: totalPage, isLoading: isCounting } = useGetCountQuery({
+        page: -1,
+        pageSize: 10,
+        path: options.url,
+    });
 
     const handleChange =
         (name: string, isSave?: boolean) =>
@@ -315,69 +257,65 @@ export default function Waline(props: { path: string }) {
             });
         };
 
+    const [sendComment, { isLoading: isSending }] = useSendCommentMutation();
+
     const submit = (e: FormEvent) => {
         e.preventDefault();
-        setSubmitLoading(true);
         if (!options.comment || options.comment.trim().length < 2) {
-            setErrMsg("评论内容过短");
-            setShowNotice(true);
-            setSubmitLoading(false);
+            enqueueSnackbar("评论内容过短", {
+                variant: "error",
+            });
             return;
         }
         if (!options.nick || options.nick.trim().length < 2) {
-            setErrMsg("昵称过短");
-            setShowNotice(true);
-            setSubmitLoading(false);
+            enqueueSnackbar("昵称过短", {
+                variant: "error",
+            });
             return;
         }
         if (!options.nick || options.nick.trim().length > 20) {
-            setErrMsg("昵称过长");
-            setShowNotice(true);
-            setSubmitLoading(false);
+            enqueueSnackbar("昵称过长", {
+                variant: "error",
+            });
             return;
         }
         if (
             !options.mail ||
             options.mail.trim().length < 6 ||
-            !new RegExp(
-                "^[a-zA-Z0-9-_.]+@[a-zA-Z-_0-9]+.[a-zA-Z-_0-9.]+$"
-            ).test(options.mail)
+            !new RegExp("^[\\w-.]+@[\\w-]+.[\\w-.]+$").test(options.mail)
         ) {
-            setErrMsg("错误的邮箱");
-            setShowNotice(true);
-            setSubmitLoading(false);
+            enqueueSnackbar("邮箱不合法", {
+                variant: "error",
+            });
             return;
         }
-        WalineAPI.post("/comment", {
-            comment: options.comment,
+
+        sendComment({
+            ...options,
             link: options.link ? options.link : null,
-            mail: options.mail,
-            nick: options.nick,
             pid: options.pid === 0 ? null : options.pid,
             rid: options.rid === 0 ? null : options.rid,
-            ua: options.ua,
-            url: options.url,
             at: null,
         })
-            .then((res) => {
-                if (res.status !== 200) {
-                    setErrMsg(res.status + " Error");
-                    setShowNotice(true);
-                }
-            })
-            .catch((error) => {
-                alert(error);
-            })
+            .unwrap()
             .then(() => {
-                setSubmitLoading(false);
+                refetch();
+                enqueueSnackbar("评论成功", {
+                    variant: "success",
+                });
                 setOptions({
                     ...options,
                     comment: "",
                 });
+            })
+            .catch((error) => {
+                enqueueSnackbar(String(error), {
+                    variant: "error",
+                });
             });
     };
 
-    if (!pageLoading) {
+    if (isLoading || isCounting) {
         return (
             <Box className={classes.loading}>
                 <CircularProgress size={48} />
@@ -390,13 +328,15 @@ export default function Waline(props: { path: string }) {
             <Box className={classes.root}>
                 <Alert severity="info" className={classes.notice}>
                     <AlertTitle>注意</AlertTitle>
-                    <ul style={{ margin: 0, paddingLeft: 20 }}>
-                        <li>本评论系统兼容Markdown语法</li>
-                        <li>请不要大量发表重复内容。</li>
-                    </ul>
+                    <Box component={"ul"} sx={{ margin: 0, paddingLeft: 2.5 }}>
+                        <Box component={"li"}>
+                            {"本评论系统兼容Markdown语法"}
+                        </Box>
+                        <Box component={"li"}>{"请不要大量发表重复内容。"}</Box>
+                    </Box>
                 </Alert>
                 <Paper className={classes.editor}>
-                    <form onSubmit={submit}>
+                    <Box component={"form"} onSubmit={submit}>
                         <Box className={classes.editorDiv} id={"editor"}>
                             <TextField
                                 id="comment"
@@ -445,98 +385,47 @@ export default function Waline(props: { path: string }) {
                                     <Button
                                         variant="contained"
                                         type={"submit"}
-                                        disabled={submitLoading}
+                                        disabled={isSending}
                                     >
                                         {"提交"}
                                     </Button>
                                 </Box>
                             </Box>
                         </Box>
-                    </form>
+                    </Box>
                 </Paper>
                 {/* 评论列表 */}
-                {isCommentLoading ? (
+                {isLoading ? (
                     <Box className={classes.loading}>
                         <CircularProgress size={48} />
                     </Box>
                 ) : (
-                    <React.Suspense
-                        fallback={
-                            <Box className={classes.loading}>
-                                <CircularProgress size={48} />
-                            </Box>
-                        }
+                    <Masonry
+                        columns={{ md: 2, xs: 1 }}
+                        spacing={1}
+                        sx={{ margin: 0, my: 2 }}
                     >
-                        <Masonry
-                            columns={{ md: 2, sx: 1 }}
-                            spacing={2}
-                            sx={{ margin: 0 }}
-                        >
-                            {postData.data.map((value, index) => (
+                        {typeof data !== "undefined" &&
+                            data.map((value, index) => (
                                 <CommentBlock data={value} key={index} />
                             ))}
-                        </Masonry>
-                    </React.Suspense>
+                    </Masonry>
                 )}
                 {/* 页面控制 */}
                 <Paper className={classes.pageControl}>
-                    <IconButton
-                        onClick={() => previousPage()}
-                        disabled={!(page - 1 >= 1)}
-                    >
-                        <KeyboardArrowLeftRoundedIcon />
-                    </IconButton>
-                    <Typography
-                        variant={"body2"}
-                        color={"inherit"}
-                        sx={{ margin: 0, pt: 1, pb: 1, pl: 2, pr: 2 }}
-                    >
-                        {`${page} / ${totalPage}`}
-                    </Typography>
-                    <IconButton
-                        onClick={() => nextPage()}
-                        disabled={!(page + 1 <= totalPage)}
-                    >
-                        <KeyboardArrowRightRoundedIcon />
-                    </IconButton>
+                    <Pagination
+                        className={classes.pageButton}
+                        count={totalPage}
+                        page={page}
+                        onChange={(
+                            event: React.ChangeEvent<unknown>,
+                            value: number
+                        ) => {
+                            setPage(value);
+                        }}
+                    />
                 </Paper>
             </Box>
-            <Dialog
-                open={showNotice}
-                onClose={() => setShowNotice(false)}
-                aria-labelledby="form-dialog-title"
-                maxWidth="sm"
-                fullWidth
-            >
-                <DialogTitle
-                    id="form-dialog-title"
-                    sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                    }}
-                >
-                    <ErrorRoundedIcon sx={{ margin: 1 }} />
-                    <Typography
-                        variant={"h6"}
-                        component={"span"}
-                        sx={{ margin: 1 }}
-                        fontWeight={"bold"}
-                    >
-                        {"Error"}
-                    </Typography>
-                </DialogTitle>
-                <DialogContent dangerouslySetInnerHTML={{ __html: errMsg }} />
-
-                <DialogActions>
-                    <Button
-                        onClick={() => setShowNotice(false)}
-                        color={"primary"}
-                    >
-                        关闭
-                    </Button>
-                </DialogActions>
-            </Dialog>
         </Fragment>
     );
 }

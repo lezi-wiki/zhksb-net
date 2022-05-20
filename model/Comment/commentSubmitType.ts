@@ -1,4 +1,4 @@
-export interface CommentSubmitType {
+export default interface CommentSubmitType {
     comment: string;
     link: string | null;
     mail: string;

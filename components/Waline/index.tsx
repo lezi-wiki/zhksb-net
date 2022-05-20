@@ -21,13 +21,14 @@ import {
 import WalineAPI from "../../middleware/WalineAPI";
 import { CommentListType } from "../../types/Comment/CommentListType";
 import { CommentSubmitType } from "../../types/Comment/CommentSubmitType";
-import CommentBlock from "./CommentBlock";
 import cookie from "react-cookies";
 import Masonry from "@mui/lab/Masonry";
 import { useRouter } from "next/router";
 import KeyboardArrowLeftRoundedIcon from "@mui/icons-material/KeyboardArrowLeftRounded";
 import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRightRounded";
 import ErrorRoundedIcon from "@mui/icons-material/ErrorRounded";
+
+const CommentBlock = React.lazy(() => import("./CommentBlock"));
 
 const style = {
     border: "1px solid",
@@ -459,15 +460,23 @@ export default function Waline(props: { path: string }) {
                         <CircularProgress size={48} />
                     </Box>
                 ) : (
-                    <Masonry
-                        columns={{ md: 3, sx: 1 }}
-                        spacing={2}
-                        sx={{ margin: 0 }}
+                    <React.Suspense
+                        fallback={
+                            <Box className={classes.loading}>
+                                <CircularProgress size={48} />
+                            </Box>
+                        }
                     >
-                        {postData.data.map((value, index) => (
-                            <CommentBlock data={value} key={index} />
-                        ))}
-                    </Masonry>
+                        <Masonry
+                            columns={{ md: 2, sx: 1 }}
+                            spacing={2}
+                            sx={{ margin: 0 }}
+                        >
+                            {postData.data.map((value, index) => (
+                                <CommentBlock data={value} key={index} />
+                            ))}
+                        </Masonry>
+                    </React.Suspense>
                 )}
                 {/* 页面控制 */}
                 <Paper className={classes.pageControl}>

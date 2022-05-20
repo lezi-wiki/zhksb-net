@@ -8,7 +8,7 @@ export const getBaseURL = () => {
 
 const instance = axios.create({
     baseURL: getBaseURL(),
-    withCredentials: true,
+    withCredentials: false,
 });
 
 export default instance;

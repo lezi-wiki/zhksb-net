@@ -5,7 +5,7 @@ import {
     ThunkAction,
 } from "@reduxjs/toolkit";
 import { createWrapper, HYDRATE } from "next-redux-wrapper";
-import counter from "./counter";
+import view from "./view";
 
 export const hydrateSlice = createSlice({
     name: "hydrate",
@@ -22,16 +22,16 @@ export const hydrateSlice = createSlice({
     },
 });
 
-const makeStore = () =>
+const store = () =>
     configureStore({
         reducer: {
             hydrate: hydrateSlice.reducer,
-            counter: counter,
+            view,
         },
         devTools: process.env.NODE_ENV === "development",
     });
 
-export type AppStore = ReturnType<typeof makeStore>;
+export type AppStore = ReturnType<typeof store>;
 export type AppState = ReturnType<AppStore["getState"]>;
 export type AppThunk<ReturnType = void> = ThunkAction<
     ReturnType,
@@ -40,4 +40,4 @@ export type AppThunk<ReturnType = void> = ThunkAction<
     Action
 >;
 
-export const wrapper = createWrapper<AppStore>(makeStore);
+export const wrapper = createWrapper<AppStore>(store);

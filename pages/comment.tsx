@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import { Box, Container, CssBaseline, Theme, Typography } from "@mui/material";
 import Head from "next/head";
@@ -6,6 +6,8 @@ import { useRouter } from "next/router";
 import NavBar from "../components/NavBar";
 import Waline from "../components/Waline";
 import Footer from "../components/Footer";
+import { useAppDispatch } from "../store/hooks";
+import { setTitle } from "../store/view";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -24,9 +26,15 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-const Comment:FC = () => {
+const Comment: FC = () => {
     const classes = useStyles();
     const router = useRouter();
+
+    const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        dispatch(setTitle("Comment"));
+    }, [dispatch]);
 
     return (
         <>
@@ -42,7 +50,7 @@ const Comment:FC = () => {
 
             <CssBaseline />
             <NavBar />
-            <Container maxWidth={"lg"} fixed={true} className={classes.root}>
+            <Container maxWidth={"md"} className={classes.root}>
                 <Box className={classes.main}>
                     <Box className={classes.title}>
                         <Typography
@@ -59,6 +67,6 @@ const Comment:FC = () => {
             </Container>
         </>
     );
-}
+};
 
 export default Comment;

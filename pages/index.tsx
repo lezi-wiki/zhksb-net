@@ -1,10 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 import Head from "next/head";
-import React from "react";
+import React, { useEffect } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
 import { Box, Container, CssBaseline, Theme, Typography } from "@mui/material";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
+import logoImage from "../images/logo.png";
+import Image from "next/image";
+import { useAppDispatch } from "../store/hooks";
+import { setTitle } from "../store/view";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -39,6 +43,12 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function Home() {
     const classes = useStyles();
 
+    const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        dispatch(setTitle("Home"));
+    }, [dispatch]);
+
     return (
         <>
             <Head>
@@ -46,29 +56,26 @@ export default function Home() {
                     name={"description"}
                     content={"张贺凯小朋友傻逼到超乎你的想象"}
                 />
-                <link
-                    rel={"preload"}
-                    href={"https://alpha-q3.sourcegcdn.com/2022/02/08/M0wM.png"}
-                    as={"image"}
-                />
                 <link rel="prefetch" href="//stat.ahdark.com" />
             </Head>
 
             <CssBaseline />
             <NavBar />
-            <Container maxWidth={"lg"} fixed={true}>
+            <Container maxWidth={"md"}>
                 <Box className={classes.main}>
                     {/*
-					 <img
-					 src={"https://q3.a1pic.cn/2022/02/08/M0wM.png"}
-					 alt="张贺凯"
-					 className={classes.avatar}
-					 />
-					 */}
-                    <img
-                        src={"https://alpha-q3.sourcegcdn.com/2022/03/20/MODBRTFu.png"}
-                        alt="Logo"
+                     <img
+                     src={"https://q3.a1pic.cn/2022/02/08/M0wM.png"}
+                     alt="张贺凯"
+                     className={classes.avatar}
+                     />
+                     */}
+                    <Image
+                        src={logoImage}
                         className={classes.avatar}
+                        alt="Logo"
+                        width={280}
+                        height={280}
                     />
 
                     <Typography

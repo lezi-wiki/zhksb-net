@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Link, Typography } from "@mui/material";
+import Image from "next/image";
 
 export default function Footer() {
     return (
@@ -10,11 +11,12 @@ export default function Footer() {
                 underline={"none"}
                 color={"inherit"}
             >
-                <img
+                <Image
                     src={
                         "https://img.shields.io/github/stars/zhk-sb/zhk?style=social"
                     }
-                    style={{ height: 20, width: 76 }}
+                    height={20}
+                    width={76}
                     alt={"stars"}
                 />
             </Link>
@@ -43,12 +45,12 @@ export default function Footer() {
                 </Link>
                 {" and served on "}
                 <Link
-                    href={"https://aws.amazon.com"}
+                    href={"https://www.cloudflare.com"}
                     underline={"none"}
                     rel={"sponsor noreferrer noopener"}
                     target={"_blank"}
                 >
-                    {"AWS"}
+                    {"CloudFlare"}
                 </Link>
                 {"."}
             </Typography>

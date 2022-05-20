@@ -1,11 +1,13 @@
 import type { AppProps } from "next/app";
 import { ThemeProvider } from "@mui/styles";
 import { theme } from "../theme";
-import React, { Component, FC } from "react";
+import React, { Component, FC, useEffect } from "react";
 import Script from "next/script";
 import { wrapper } from "../store/store";
 import createCache, { EmotionCache } from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
+import Head from "next/head";
+import { useAppSelector } from "../store/hooks";
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -21,9 +23,24 @@ const MyApp: FC<
         emotionCache?: EmotionCache;
     }
 > = ({ Component, emotionCache = clientSideEmotionCache, pageProps }) => {
+    const title = useAppSelector<string | null>((state) => state.view.title);
+
+    useEffect(() => {
+        window.document.title = title !== null ? `${title} - ZHKSB` : "ZHKSB";
+    }, [title]);
+
     return (
         <>
+            <Head>
+                <title>{title !== null ? `${title} - ZHKSB` : "ZHKSB"}</title>
+            </Head>
             <CacheProvider value={emotionCache}>
+                <Head>
+                    <meta
+                        name="viewport"
+                        content="initial-scale=1, width=device-width"
+                    />
+                </Head>
                 <ThemeProvider theme={theme}>
                     <Script id={"matomo"} strategy="lazyOnload">
                         {`var _paq=window._paq=window._paq||[];

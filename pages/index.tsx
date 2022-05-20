@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import Head from "next/head";
 import React, { useEffect } from "react";
 import { createStyles, makeStyles } from "@mui/styles";
@@ -6,7 +5,6 @@ import { Box, Container, CssBaseline, Theme, Typography } from "@mui/material";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
 import logoImage from "../images/logo.png";
-import Image from "next/image";
 import { useAppDispatch } from "../store/hooks";
 import { setTitle } from "../store/view";
 
@@ -70,12 +68,11 @@ export default function Home() {
                      className={classes.avatar}
                      />
                      */}
-                    <Image
-                        src={logoImage}
+                    <Box
+                        component={"img"}
+                        src={logoImage.src}
                         className={classes.avatar}
                         alt="Logo"
-                        width={280}
-                        height={280}
                     />
 
                     <Typography

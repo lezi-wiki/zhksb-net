@@ -1,6 +1,5 @@
 import React from "react";
 import { Box, Link, Typography } from "@mui/material";
-import Image from "next/image";
 
 export default function Footer() {
     return (
@@ -11,12 +10,15 @@ export default function Footer() {
                 underline={"none"}
                 color={"inherit"}
             >
-                <Image
+                <Box
+                    component={"img"}
                     src={
                         "https://img.shields.io/github/stars/zhk-sb/zhk?style=social"
                     }
-                    height={20}
-                    width={76}
+                    sx={{
+                        height: 20,
+                        width: 76,
+                    }}
                     alt={"stars"}
                 />
             </Link>
